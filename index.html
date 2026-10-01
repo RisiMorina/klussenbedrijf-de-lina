@@ -18,12 +18,9 @@
     // Scroll animations only enhance: without this class everything is simply visible
     root.classList.add('motion');
 
-    // Intro once per visit, never when storage is blocked
+    // Scroll-driven intro until it has been painted once this visit; never when storage is blocked
     try {
-      if (!sessionStorage.getItem('delina-intro')) {
-        sessionStorage.setItem('delina-intro', '1');
-        root.classList.add('has-intro');
-      }
+      if (!sessionStorage.getItem('delina-intro')) root.classList.add('has-intro');
     } catch (e) {}
 
     // Smooth (inertia) scrolling on mouse/trackpad devices only; phones keep native scrolling
@@ -150,17 +147,14 @@
   .actions .alt { color: var(--muted); }
   .alt a { display: inline-block; padding: .6rem .15em; }
 
-  /* ---------- Intro: brush stroke that paints the page in ---------- */
+  /* ---------- Intro: a brush stroke paints the page open (~1s, scrolling speeds it up) ---------- */
+  /* Shown only once the intro script has set it up (html.intro-on), so a broken script never hides the page.
+     It sits under the nav, so "Bel Edward" in the nav stays visible and clickable throughout. */
   .intro { display: none; }
-  html.has-intro .intro {
-    display: block; position: fixed; inset: 0; z-index: 100;
-    /* fail-safe: never cover the page for long, even if the script breaks */
-    animation: intro-failsafe 0s 2.5s forwards;
-  }
+  html.intro-on .intro { display: block; position: fixed; inset: 0; z-index: 9; }
   .intro svg { display: block; width: 100%; height: 100%; }
   .intro .cover { fill: var(--plaster); }
   .intro .paint { stroke: var(--tape); }
-  @keyframes intro-failsafe { to { visibility: hidden; } }
 
   /* ---------- Services ---------- */
   .services .lead { margin-bottom: 2.5rem; }
@@ -301,20 +295,24 @@
   var root = document.documentElement, intro = document.getElementById('intro');
   if (!root.classList.contains('has-intro')) { intro.remove(); return; }
 
-  var w = innerWidth, h = innerHeight;
+  var w = innerWidth, h = innerHeight, diag = Math.hypot(w, h);
   // diagonal from bottom-left to top-right, drawn along local x so the bristle noise follows the stroke
-  var dx = w * 1.1, dy = h * .7, len = Math.hypot(dx, dy);
-  var angle = -Math.atan2(dy, dx) * 180 / Math.PI;
+  var angle = -Math.atan2(h * .8, w * 1.25) * 180 / Math.PI;
   var width = Math.max(170, Math.min(w, h) * .46);
-  var full = Math.hypot(w, h) * 2.2;
+  var full = diag * 2.2;
+  // Both ends sit beyond the screen's corners (plus the brush's displacement), so a stroke end
+  // can never show, not even when the stroke grows to full width.
+  var len = diag + width + 80;
   var d = 'M' + (-len / 2) + ' 0 Q 0 ' + (-width * .3) + ' ' + (len / 2) + ' 0';
 
   intro.querySelectorAll('.stroke-pos').forEach(function (g) {
     g.setAttribute('transform', 'translate(' + w / 2 + ' ' + h / 2 + ') rotate(' + angle + ')');
   });
+  // filter area = a circle around the screen, so the texture stays on while the stroke grows to full screen
+  var reach = Math.hypot(w, h) / 2 + 40;
   intro.querySelectorAll('filter').forEach(function (f) {
-    f.setAttribute('x', -len / 2 - width); f.setAttribute('width', len + width * 2);
-    f.setAttribute('y', -width * 1.3); f.setAttribute('height', width * 2.6);
+    f.setAttribute('x', -reach); f.setAttribute('width', reach * 2);
+    f.setAttribute('y', -reach); f.setAttribute('height', reach * 2);
   });
   var hole = intro.querySelector('.hole'), paint = intro.querySelector('.paint');
   hole.setAttribute('d', d); paint.setAttribute('d', d);
@@ -322,33 +320,62 @@
   hole.style.strokeWidth = holeWidth + 'px';
   paint.style.strokeWidth = width + 'px';
 
-  var anims = [], done = false;
-  var skipEvents = ['pointerdown', 'touchstart', 'wheel', 'keydown', 'scroll'];
-  function end() {
-    if (done) return; done = true;
-    anims.forEach(function (a) { a.cancel(); });
-    skipEvents.forEach(function (t) { removeEventListener(t, end, true); });
-    intro.remove();
-    root.classList.remove('has-intro');
+  // Progress 0→1 runs by itself in ~1s (scrolling plays it faster):
+  //   0–.55  the paint sweeps across     .04–.60  the page opens up just behind it
+  //   .55–1  the opening grows to full screen (hero readable well before 1s), then the intro is removed
+  var DURATION = 1000, FAST = 3;
+  // skip the part of the stroke that lies off-screen at the start, so paint appears from the first frame
+  var rad = angle * Math.PI / 180;
+  var onAxis = w / 2 * Math.abs(Math.cos(rad)) + h / 2 * Math.abs(Math.sin(rad));
+  var skip = Math.max(0, (len / 2 - onAxis - width / 2) / len);
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function easeOut(t) { return 1 - (1 - t) * (1 - t); }   // paint starts moving at once, settles at the end
+  function render(p) {
+    var a = easeOut(clamp(p / .55)), b = easeOut(clamp((p - .04) / .56)), g = clamp((p - .55) / .45);
+    g *= g;
+    paint.style.strokeDashoffset = 1 - (skip + (1 - skip) * a);
+    hole.style.strokeDashoffset = 1 - (skip + (1 - skip) * b);
+    hole.style.strokeWidth = holeWidth + (full - holeWidth) * g + 'px';
+    paint.style.strokeWidth = width + (full * 1.1 - width) * g + 'px';
   }
-  skipEvents.forEach(function (t) { addEventListener(t, end, { capture: true, passive: true }); });
 
-  // 1. the paint sweeps across (0–820ms); the page opens up just behind it (150–950ms)
-  var ease = 'cubic-bezier(.55, .05, .3, 1)';
-  anims.push(paint.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 820, easing: ease, fill: 'forwards' }));
-  var last = hole.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 800, delay: 150, easing: ease, fill: 'both' });
-  anims.push(last);
-
-  // 2. the opening grows to full screen (300ms), then the intro is gone
-  last.onfinish = function () {
+  var p = 0, rate = 1, last = null, done = false;
+  function frame(now) {
     if (done) return;
-    hole.removeAttribute('filter'); paint.removeAttribute('filter');
-    var grow = { duration: 300, easing: 'cubic-bezier(.5, 0, .75, 0)', fill: 'forwards' };
-    anims.push(hole.animate([{ strokeWidth: holeWidth + 'px' }, { strokeWidth: full + 'px' }], grow));
-    var g = paint.animate([{ strokeWidth: width + 'px' }, { strokeWidth: full * 1.1 + 'px' }], grow);
-    anims.push(g);
-    g.onfinish = end;
-  };
+    if (last !== null) p += (now - last) / DURATION * rate;
+    last = now;
+    if (p >= 1) return finish();
+    render(p);
+    requestAnimationFrame(frame);
+  }
+  function hurry() { rate = FAST; }
+
+  var scrollInput = ['wheel', 'touchmove', 'scroll'];
+  function finish() {
+    if (done) return; done = true;
+    intro.remove();
+    root.classList.remove('intro-on', 'has-intro');
+    try { sessionStorage.setItem('delina-intro', '1'); } catch (e) {}
+    scrollInput.forEach(function (t) { removeEventListener(t, hurry); });
+    removeEventListener('keydown', onKey);
+    removeEventListener('focusin', onFocus);
+  }
+  // Ways out: click/tap the cover, Escape/Enter, or tab to anything outside the nav. Scrolling speeds it up.
+  function onKey(e) {
+    if (e.key === 'Escape' || e.key === 'Enter') finish();
+    else if (/^(ArrowDown|PageDown|Space| |End)$/.test(e.key)) hurry();
+  }
+  function onFocus(e) { if (!(e.target.closest && e.target.closest('.nav'))) finish(); }
+
+  try {
+    root.classList.add('intro-on');
+    render(0);
+    intro.addEventListener('click', finish);
+    addEventListener('keydown', onKey);
+    addEventListener('focusin', onFocus);
+    scrollInput.forEach(function (t) { addEventListener(t, hurry, { passive: true }); });
+    requestAnimationFrame(frame);
+  } catch (e) { finish(); }
 })();
 </script>
 
@@ -447,6 +474,7 @@
   // Nav: hide on scroll down, show on scroll up or when scrolling stops
   window.addEventListener('scroll', function () {
     var y = window.scrollY;
+    if (document.documentElement.classList.contains('intro-on')) { lastY = y; return; }   // nav never hides during the intro
     if (y > lastY && y > 80 && !nav.contains(document.activeElement)) nav.classList.add('is-hidden');
     else if (y < lastY) nav.classList.remove('is-hidden');
     lastY = y;

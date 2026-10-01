@@ -20,7 +20,7 @@ Open `index.html` directly in a browser. No dependencies except Google Fonts (Ar
 ## Page structure (in order)
 
 1. `header.nav`: "De-Lina" + "Bel Edward". Hides on scroll down, returns on scroll up or after 700ms idle.
-0. `div.intro` (first in `<body>`): SVG brush-stroke intro overlay + its inline script. Shown only when the head script adds `html.has-intro` (first visit per session, no reduced motion). Removed from the DOM when done or skipped.
+0. `div.intro` (first in `<body>`): SVG brush-stroke intro overlay + its inline script. Head script adds `html.has-intro` (not yet shown this session, no reduced motion); the intro script adds `html.intro-on` once set up, which shows the cover. Removed from the DOM when finished or skipped.
 2. `section.hero`: h1 (6 words), sub line, `.actions`. No animation in the hero.
 3. `section.services`: "Wat ik doe", `.lead`, plain `ul.list` (not cards), `.cta` with Bel Edward.
 4. (Work section deliberately absent until real photos exist; see HTML comment TODO.)
@@ -47,7 +47,10 @@ Open `index.html` directly in a browser. No dependencies except Google Fonts (Ar
   - Lenis 1.3.26 (jsDelivr, SRI hash) is injected only on `(hover: hover) and (pointer: fine)`; it's available as `window.lenis`.
   - Never put `.reveal` on anything containing a `tel:` link or "Bel Edward": those must never be hidden or delayed.
   - Only animate `transform` and `opacity`.
-- Intro: paint stroke 0–820ms, page opening behind it 150–950ms, opening grows to full screen 950–1250ms. Keep total under 1.5s. Skips on pointerdown/touchstart/wheel/keydown/scroll. Test in a fresh browser context (sessionStorage hides it on reload).
+- Intro is time-driven (`DURATION` 1000ms of progress, `FAST` = 3× once the visitor scrolls). Paint 0–.55, opening .04–.60, opening grows to full screen .55–1, then `finish()` removes it.
+  Hero is fully readable at ~0.8s; intro gone at ~1.05s. Stroke length = screen diagonal + stroke width + 80px, so its ends are always off-screen; `skip` starts the dash at the screen edge.
+  Cover is `z-index: 9` under the nav (10); the nav never hides while `intro-on`.
+  Exits: click on the cover, Escape/Enter, focus outside the nav. Test in a fresh browser context (sessionStorage hides it after it finished once). For frame captures use Playwright's paused clock (`clock.install` + `pauseAt` + `runFor`), since the intro runs on requestAnimationFrame time.
 - Placeholders use `<span class="todo">TODO</span>` (dashed outline). Never invent work area, KvK, hours, reviews or photos.
 
 ## Never

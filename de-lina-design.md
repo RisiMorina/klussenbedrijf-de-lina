@@ -116,10 +116,13 @@ Spend all boldness here; keep everything else quiet.
 
 - Each section heading has a strip of blue painter's tape (a slightly rough-edged `--tape` rectangle, a little skewed, ~1–2°) partly behind or under it, like tape on a wall before painting.
 - ~~In the hero, a strip of tape peels away on load~~ (replaced, see intro below). The heading tape is static.
-- **Intro (the one bold moment):** on first load, one wide `--tape` brush stroke sweeps diagonally (bottom-left → top-right) across a `--plaster` cover. It is built in SVG (feTurbulence + feDisplacementMap for rough edges and bristle streaks), not video. The stroke is a mask: the page shows through it as it paints, then the opening grows to full screen and the intro is removed. Total ≈ 1.3s (must stay under 1.5s).
-  - Once per visit (`sessionStorage` key `delina-intro`). Any click, tap, scroll, wheel or key press skips it instantly.
-  - All content is in the HTML underneath from the start; the intro only covers it. A CSS fail-safe hides it after 2.5s even if the script fails.
-  - No other animation in the hero.
+- **Intro (the one bold moment):** one wide `--tape` brush stroke paints diagonally (bottom-left → top-right) across a `--plaster` cover. It is built in SVG (feTurbulence + feDisplacementMap for rough edges and bristle streaks), not video. The stroke is a mask: the page shows through it as it paints, then the opening grows to full screen and the intro is removed.
+  - It never blocks first understanding: it runs by itself, headline, sub line and "Bel Edward" are fully readable at ~0.8s, and the intro is gone at ~1.05s. Scrolling (wheel, touch, scroll keys) plays it 3× faster; nothing has to be scrolled through, and the hero is never pinned.
+  - Both stroke ends sit beyond the screen corners, so no stroke end, edge or hairline is ever visible; only the stroke and the page.
+  - The nav sits above the cover, so "Bel Edward" is visible and clickable throughout. Clicking/tapping the cover, Escape/Enter, or tabbing into the page ends the intro at once.
+  - Once per visit: `sessionStorage` key `delina-intro` is set when the intro finishes.
+  - All content is in the HTML underneath from the start. The cover only appears once the intro script has set itself up (`html.intro-on`), so a script error never hides the page.
+  - No other animation in the hero while the intro runs.
 - **Scrolling (calm, Feadship-like, never flashy):**
   - Desktop (mouse/trackpad): Lenis 1.3.26 inertia scrolling, loaded from jsDelivr with an integrity hash. Touch devices keep native scrolling.
   - Section headings reveal line by line (each line slides up from behind a mask and fades in); the heading tape then draws in from the left.
