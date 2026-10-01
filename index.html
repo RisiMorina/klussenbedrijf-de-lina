@@ -10,7 +10,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@85,800&family=Public+Sans:wght@400;600&display=swap">
-<script>document.documentElement.classList.add('js')</script>
+<script>
+  (function () {
+    var root = document.documentElement;
+    root.classList.add('js');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Scroll animations only enhance: without this class everything is simply visible
+    root.classList.add('motion');
+
+    // Intro once per visit, never when storage is blocked
+    try {
+      if (!sessionStorage.getItem('delina-intro')) {
+        sessionStorage.setItem('delina-intro', '1');
+        root.classList.add('has-intro');
+      }
+    } catch (e) {}
+
+    // Smooth (inertia) scrolling on mouse/trackpad devices only; phones keep native scrolling
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js';
+      s.integrity = 'sha384-jqpi9VmOdhyLoLURgjCn7EpnG9BbnHW57ibIZoeaIU+erWDH3k8fQQg0xH2ySjnw';
+      s.crossOrigin = 'anonymous';
+      s.async = true;
+      s.onload = function () { window.lenis = new Lenis({ lerp: .085, wheelMultiplier: .9, autoRaf: true, anchors: true }); };
+      document.head.appendChild(s);
+    }
+  })();
+</script>
 <style>
   :root {
     --plaster: #E6E4DF;
@@ -32,6 +59,7 @@
     --btn-h: 3.5rem;
     --nav-h: 3.75rem;
     --ease: cubic-bezier(.2, .6, .2, 1);
+    --ease-out: cubic-bezier(.16, 1, .3, 1);   /* long, calm settle for scroll reveals */
 
     /* torn ends of a strip of painter's tape */
     --torn: polygon(0 10%, 1.5% 0, 50% 3%, 98.5% 0, 100% 12%, 99% 38%, 100% 62%, 98.8% 86%, 100% 100%, 50% 97%, 1.2% 100%, 0 88%, 1% 64%, 0 40%, 1.2% 22%);
@@ -114,7 +142,6 @@
     padding-bottom: clamp(3rem, 8vw, 6rem);
   }
   .hero h1 {
-    position: relative;
     font-size: clamp(2.6rem, 8vw, 6rem);
     max-width: 15em;
   }
@@ -123,23 +150,17 @@
   .actions .alt { color: var(--muted); }
   .alt a { display: inline-block; padding: .6rem .15em; }
 
-  /* the strip that peels away on load */
-  .peel {
-    position: absolute; z-index: 1;
-    inset: -.06em -.25em -.1em -.3em;
-    pointer-events: none;
-    animation: peel 900ms cubic-bezier(.55, 0, .25, 1) 350ms both;
+  /* ---------- Intro: brush stroke that paints the page in ---------- */
+  .intro { display: none; }
+  html.has-intro .intro {
+    display: block; position: fixed; inset: 0; z-index: 100;
+    /* fail-safe: never cover the page for long, even if the script breaks */
+    animation: intro-failsafe 0s 2.5s forwards;
   }
-  .peel::before {
-    content: ""; position: absolute; inset: 0;
-    background: var(--tape);
-    clip-path: var(--torn);
-    transform: rotate(-1deg);
-  }
-  @keyframes peel {
-    0%   { clip-path: inset(-20% -5% -20% 0); transform: none; }
-    100% { clip-path: inset(-20% -5% -20% 106%); transform: translate(.15em, -.25em) rotate(-2deg); visibility: hidden; }
-  }
+  .intro svg { display: block; width: 100%; height: 100%; }
+  .intro .cover { fill: var(--plaster); }
+  .intro .paint { stroke: var(--tape); }
+  @keyframes intro-failsafe { to { visibility: hidden; } }
 
   /* ---------- Services ---------- */
   .services .lead { margin-bottom: 2.5rem; }
@@ -196,18 +217,140 @@
     footer { padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }
   }
 
-  /* ---------- Scroll reveal (only when JS runs) ---------- */
-  .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 1s ease, transform 1s var(--ease); }
-  .js .reveal.in { opacity: 1; transform: none; }
+  /* ---------- Work photos (section not in the page yet; see the comment in <main>) ---------- */
+  .work { padding: var(--section) 0 0; }
+  .work-photo { margin: 0; overflow: hidden; aspect-ratio: 16 / 9; background: var(--wall); }
+  .work-photo + .work-photo { margin-top: clamp(1rem, 3vw, 2.5rem); }
+  /* image is 20% taller than its frame so it can drift inside it */
+  .work-photo img { display: block; width: 100%; height: 120%; margin-top: -10%; object-fit: cover; }
+  @media (max-width: 640px) {
+    .work-photo { aspect-ratio: 4 / 3; }
+    .work-photo + .work-photo { margin-top: 30svh; }   /* one photo per screen */
+  }
+
+  /* ---------- Smooth scrolling (Lenis' required CSS) ---------- */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+
+  /* ---------- Scroll motion (only with html.motion: JS on, no reduced motion) ---------- */
+  .motion .reveal {
+    opacity: 0; transform: translateY(1.5rem);
+    transition: opacity .9s ease, transform 1.2s var(--ease-out);
+    transition-delay: var(--d, 0ms);
+  }
+  .motion .reveal.in { opacity: 1; transform: none; }
+
+  /* headings: split into lines by JS, each line slides up from behind its own mask */
+  .motion [data-split]:not(.split) { opacity: 0; }
+  .split .line { display: block; overflow: hidden; padding: .1em 0 .18em; margin: -.1em 0 -.18em; }
+  .split .line > span { display: block; }
+  .motion .split .line > span {
+    transform: translateY(115%); opacity: 0;
+    transition: transform 1.2s var(--ease-out), opacity .9s ease;
+    transition-delay: calc(var(--d, 0ms) + var(--l, 0) * 110ms);
+  }
+  .motion .split.in .line > span { transform: none; opacity: 1; }
+  /* then the tape is drawn in under it (hidden from the start, so it never animates out first) */
+  .motion [data-split] .taped::before { transform: rotate(-1.5deg) scaleX(0); }
+  .motion .split.in .taped::before {
+    transition: transform .9s cubic-bezier(.65, 0, .35, 1) calc(var(--d, 0ms) + var(--tape-delay, .5s));
+  }
+  .motion .split.in .taped::before { transform: rotate(-1.5deg) scaleX(1); }
+
+  /* hero drifts slower than the page; transform/opacity are set by JS */
+  .motion .hero .wrap { will-change: transform; }
 
   @media (prefers-reduced-motion: reduce) {
-    .peel { display: none; }
-    .js .reveal { opacity: 1; transform: none; transition: none; }
+    .intro { display: none !important; }
     .nav, .callbar, .btn { transition: none; }
   }
 </style>
 </head>
 <body>
+
+<!-- Intro: a plaster cover with a brush-stroke hole. The page underneath is fully loaded; this only covers it. -->
+<div class="intro" id="intro" aria-hidden="true">
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- rough, displaced edges -->
+      <filter id="brush-edge" filterUnits="userSpaceOnUse">
+        <feTurbulence type="fractalNoise" baseFrequency="0.004 0.06" numOctaves="2" seed="7" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="34" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <!-- rough edges plus bristle streaks running along the stroke -->
+      <filter id="brush-bristle" filterUnits="userSpaceOnUse">
+        <feTurbulence type="fractalNoise" baseFrequency="0.004 0.06" numOctaves="2" seed="7" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="34" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.0025 0.22" numOctaves="1" seed="2" result="hairs"/>
+        <feColorMatrix in="hairs" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  9 0 0 0 -3.4" result="streaks"/>
+        <feComposite in="rough" in2="streaks" operator="in"/>
+      </filter>
+      <mask id="intro-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+        <rect width="100%" height="100%" fill="#fff"/>
+        <g class="stroke-pos"><path class="hole" fill="none" stroke="#000" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" filter="url(#brush-edge)"/></g>
+      </mask>
+    </defs>
+    <g mask="url(#intro-mask)">
+      <rect class="cover" width="100%" height="100%"/>
+      <g class="stroke-pos"><path class="paint" fill="none" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" filter="url(#brush-bristle)"/></g>
+    </g>
+  </svg>
+</div>
+<script>
+(function () {
+  var root = document.documentElement, intro = document.getElementById('intro');
+  if (!root.classList.contains('has-intro')) { intro.remove(); return; }
+
+  var w = innerWidth, h = innerHeight;
+  // diagonal from bottom-left to top-right, drawn along local x so the bristle noise follows the stroke
+  var dx = w * 1.1, dy = h * .7, len = Math.hypot(dx, dy);
+  var angle = -Math.atan2(dy, dx) * 180 / Math.PI;
+  var width = Math.max(170, Math.min(w, h) * .46);
+  var full = Math.hypot(w, h) * 2.2;
+  var d = 'M' + (-len / 2) + ' 0 Q 0 ' + (-width * .3) + ' ' + (len / 2) + ' 0';
+
+  intro.querySelectorAll('.stroke-pos').forEach(function (g) {
+    g.setAttribute('transform', 'translate(' + w / 2 + ' ' + h / 2 + ') rotate(' + angle + ')');
+  });
+  intro.querySelectorAll('filter').forEach(function (f) {
+    f.setAttribute('x', -len / 2 - width); f.setAttribute('width', len + width * 2);
+    f.setAttribute('y', -width * 1.3); f.setAttribute('height', width * 2.6);
+  });
+  var hole = intro.querySelector('.hole'), paint = intro.querySelector('.paint');
+  hole.setAttribute('d', d); paint.setAttribute('d', d);
+  var holeWidth = width * .62;
+  hole.style.strokeWidth = holeWidth + 'px';
+  paint.style.strokeWidth = width + 'px';
+
+  var anims = [], done = false;
+  var skipEvents = ['pointerdown', 'touchstart', 'wheel', 'keydown', 'scroll'];
+  function end() {
+    if (done) return; done = true;
+    anims.forEach(function (a) { a.cancel(); });
+    skipEvents.forEach(function (t) { removeEventListener(t, end, true); });
+    intro.remove();
+    root.classList.remove('has-intro');
+  }
+  skipEvents.forEach(function (t) { addEventListener(t, end, { capture: true, passive: true }); });
+
+  // 1. the paint sweeps across (0–820ms); the page opens up just behind it (150–950ms)
+  var ease = 'cubic-bezier(.55, .05, .3, 1)';
+  anims.push(paint.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 820, easing: ease, fill: 'forwards' }));
+  var last = hole.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 800, delay: 150, easing: ease, fill: 'both' });
+  anims.push(last);
+
+  // 2. the opening grows to full screen (300ms), then the intro is gone
+  last.onfinish = function () {
+    if (done) return;
+    hole.removeAttribute('filter'); paint.removeAttribute('filter');
+    var grow = { duration: 300, easing: 'cubic-bezier(.5, 0, .75, 0)', fill: 'forwards' };
+    anims.push(hole.animate([{ strokeWidth: holeWidth + 'px' }, { strokeWidth: full + 'px' }], grow));
+    var g = paint.animate([{ strokeWidth: width + 'px' }, { strokeWidth: full * 1.1 + 'px' }], grow);
+    anims.push(g);
+    g.onfinish = end;
+  };
+})();
+</script>
 
 <header class="nav" id="nav">
   <div class="wrap">
@@ -220,7 +363,7 @@
 
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap">
-      <h1 id="hero-title">Schilderwerk, stucwerk en vloeren. Netjes gedaan.<span class="peel" aria-hidden="true"></span></h1>
+      <h1 id="hero-title">Schilderwerk, stucwerk en vloeren. Netjes gedaan.</h1>
       <p class="sub">Binnen en buiten. Geen reiskosten, geen reisuren.</p>
       <div class="actions">
         <a class="btn" href="tel:+31642920203">Bel Edward</a>
@@ -231,37 +374,47 @@
 
   <section class="services" aria-labelledby="services-title">
     <div class="wrap">
-      <h2 id="services-title" class="reveal"><span class="taped">Wat ik doe</span></h2>
+      <h2 id="services-title" data-split><span class="taped">Wat ik doe</span></h2>
       <p class="lead reveal">Van een kamer sauzen tot een nieuwe vloer. Ik werk met goed materiaal, zodat u er jaren plezier van hebt.</p>
-      <ul class="list reveal">
-        <li><span class="name">Schilderwerk</span><span class="note">binnen en buiten</span></li>
-        <li><span class="name">Verven en sauzen</span></li>
-        <li><span class="name">Stucwerk</span></li>
-        <li><span class="name">Tapijt</span><span class="note">ook op trappen</span></li>
-        <li><span class="name">Laminaat</span></li>
+      <ul class="list">
+        <li class="reveal"><span class="name">Schilderwerk</span><span class="note">binnen en buiten</span></li>
+        <li class="reveal"><span class="name">Verven en sauzen</span></li>
+        <li class="reveal"><span class="name">Stucwerk</span></li>
+        <li class="reveal"><span class="name">Tapijt</span><span class="note">ook op trappen</span></li>
+        <li class="reveal"><span class="name">Laminaat</span></li>
       </ul>
-      <div class="cta reveal">
+      <div class="cta">
         <a class="btn" href="tel:+31642920203">Bel Edward</a>
         <p>Vertel wat er moet gebeuren.</p>
       </div>
     </div>
   </section>
 
-  <!-- TODO: Werk-sectie met 4–6 echte foto's van Edward (in /images, full-width, liggend). Weggelaten tot er foto's zijn. -->
+  <!-- TODO: Werk-sectie met 4–6 echte foto's van Edward. Weggelaten tot er foto's zijn.
+       Klaar voor gebruik: zet de foto's in /images (liggend, ±1600px breed), haal dit commentaar weg
+       en vul alt-teksten in. CSS (.work-photo) en de parallax ([data-parallax]) staan al klaar.
+
+  <section class="work" aria-label="Werk van Edward">
+    <figure class="work-photo"><img src="images/werk-1.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async" data-parallax></figure>
+    <figure class="work-photo"><img src="images/werk-2.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async" data-parallax></figure>
+    <figure class="work-photo"><img src="images/werk-3.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async" data-parallax></figure>
+    <figure class="work-photo"><img src="images/werk-4.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async" data-parallax></figure>
+  </section>
+  -->
 
   <section class="price" aria-labelledby="price-title">
     <div class="wrap">
-      <h2 id="price-title" class="reveal"><span class="taped">Eerlijke prijs</span></h2>
+      <h2 id="price-title" data-split><span class="taped">Eerlijke prijs</span></h2>
       <p class="lead reveal">U betaalt geen reiskosten en geen reisuren. Over de prijs komen we samen altijd uit.</p>
     </div>
   </section>
 
   <section class="contact" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
-      <h2 id="contact-title" class="reveal"><span class="taped">Even kennismaken?</span></h2>
+      <h2 id="contact-title" data-split><span class="taped">Even kennismaken?</span></h2>
       <p class="lead reveal">Bel of app gerust. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p>
-      <a class="phone reveal" href="tel:+31642920203" aria-label="Bel Edward: 06 42 92 02 03">06 42 92 02 03</a>
-      <div class="actions reveal">
+      <a class="phone" href="tel:+31642920203" aria-label="Bel Edward: 06 42 92 02 03">06 42 92 02 03</a>
+      <div class="actions">
         <a class="btn" href="tel:+31642920203">Bel Edward</a>
         <span class="alt">of <a href="mailto:hayk23@hotmail.nl">hayk23@hotmail.nl</a></span>
       </div>
@@ -301,8 +454,12 @@
     idle = setTimeout(function () { nav.classList.remove('is-hidden'); }, 700);
   }, { passive: true });
 
+  var motion = document.documentElement.classList.contains('motion');
+  var animated = document.querySelectorAll('.reveal');
+
   if (!('IntersectionObserver' in window)) {
-    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+    document.documentElement.classList.remove('motion');
+    bar.classList.add('is-visible');
     return;
   }
 
@@ -311,13 +468,90 @@
     bar.classList.toggle('is-visible', !entries[0].isIntersecting);
   }).observe(hero);
 
-  // Content fades in with a slight upward drift
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  if (!motion) return;
+
+  // Headings: split into lines (after the web font is in, so line breaks are final)
+  function splitLines(h) {
+    var t = h.querySelector('.taped') || h;
+    var text = t.dataset.text || (t.dataset.text = t.textContent.trim());
+    t.textContent = '';
+    var words = text.split(/\s+/).map(function (w) {
+      var s = document.createElement('span');
+      s.textContent = w;
+      t.appendChild(s); t.appendChild(document.createTextNode(' '));
+      return s;
     });
-  }, { rootMargin: '0px 0px -8% 0px' });
-  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    var lines = [], top = null;
+    words.forEach(function (w) {
+      if (w.offsetTop !== top) { lines.push([]); top = w.offsetTop; }
+      lines[lines.length - 1].push(w.textContent);
+    });
+    t.textContent = '';
+    lines.forEach(function (ws, i) {
+      var line = document.createElement('span'), inner = document.createElement('span');
+      line.className = 'line';
+      inner.textContent = ws.join(' ');
+      inner.style.setProperty('--l', i);
+      line.appendChild(inner); t.appendChild(line);
+    });
+    h.style.setProperty('--tape-delay', lines.length * 110 + 450 + 'ms');
+    h.classList.add('split');
+  }
+  var headings = document.querySelectorAll('[data-split]');
+  function splitAll() { headings.forEach(splitLines); }
+  var fontsIn = document.fonts ? document.fonts.ready : Promise.resolve();
+  Promise.race([fontsIn, new Promise(function (r) { setTimeout(r, 1500); })]).then(function () {
+    splitAll();
+    headings.forEach(function (h) { io.observe(h); });   // only watch headings once they're split
+  });
+  var lastW = innerWidth, resizeT;
+  addEventListener('resize', function () {
+    if (innerWidth === lastW) return;   // ignore mobile URL-bar height changes
+    lastW = innerWidth;
+    clearTimeout(resizeT); resizeT = setTimeout(splitAll, 150);
+  });
+
+  // Reveal: one item after another, in reading order. One running queue, so an item that
+  // enters later never overtakes one that is still waiting for its turn.
+  var STEP = 110, queueEnd = 0;
+  var io = new IntersectionObserver(function (entries) {
+    entries.filter(function (e) { return e.isIntersecting; })
+      .map(function (e) { return e.target; })
+      .sort(function (a, b) { return a.compareDocumentPosition(b) & 4 ? -1 : 1; })
+      .forEach(function (el) {
+        var now = performance.now(), at = Math.max(now, Math.min(queueEnd, now + 550));   // never wait more than 550ms
+        queueEnd = at + STEP;
+        el.style.setProperty('--d', Math.round(at - now) + 'ms');
+        el.classList.add('in');
+        io.unobserve(el);
+      });
+  }, { rootMargin: '0px 0px -10% 0px' });
+  animated.forEach(function (el) { io.observe(el); });
+
+  // Parallax: hero text drifts slower than the page and fades a little; work photos drift inside their frame
+  var heroWrap = hero.querySelector('.wrap');
+  var heroFade = hero.querySelectorAll('h1, .sub');   // never the buttons
+  var photos = document.querySelectorAll('[data-parallax]');
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var y = scrollY, vh = innerHeight, hh = hero.offsetHeight;
+    if (y <= hh * 1.2) {
+      var p = Math.min(y / hh, 1);
+      heroWrap.style.transform = 'translate3d(0,' + (y * .22).toFixed(1) + 'px,0)';
+      heroFade.forEach(function (el) { el.style.opacity = (1 - p * .55).toFixed(3); });
+    }
+    photos.forEach(function (img) {
+      var r = img.parentNode.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      var progress = (vh - r.top) / (vh + r.height);   // 0 entering, 1 leaving
+      img.style.transform = 'translate3d(0,' + ((progress - .5) * r.height * .2).toFixed(1) + 'px,0)';
+    });
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  update();
 })();
 </script>
 </body>
