@@ -18,7 +18,8 @@ Build it as a single `index.html` (CSS and JS inline). All site copy is Dutch.
   - Laminaatvloeren
 - **Selling points he makes himself:** top-quality materials so the work lasts for years; always works something out with clients on price; **no travel costs and no travel hours**.
 - **Contact:** Tel 06 42 92 02 03 · E-mail hayk23@hotmail.nl
-- **Unknown:** location / work area, KvK number, opening hours, photos of his work. Do not invent any of these. Leave clearly marked TODO placeholders.
+- **Address:** P.C. Hooftlaan 58, 7412 PT Deventer (shown in the contact section with an embedded Google Map and an "Open in Google Maps" link).
+- **Unknown:** work area, KvK number, opening hours, photos of his work. Do not invent any of these. Leave clearly marked TODO placeholders.
 
 ## 2. What the site is for
 
@@ -68,6 +69,17 @@ A homeowner or small business owner needs a painter or handyman and wants to kno
 └──────────────────────────────────────────┘
 ```
 
+**Added later (Oct 2026), between services and contact, all built from the facts above only:**
+- **Zo werk ik:** four steps: U belt of appt → Ik kom kijken → U hoort wat het kost → Ik ga aan de slag. Each step number sits on a small scrap of tape.
+- **Eerlijke prijs** gets four short points under the lead: Geen reiskosten, Vooraf duidelijk, Goed materiaal, Eén vakman.
+- **Goed om te weten:** a short FAQ in collapsed `<details>` (reading stays opt-in). Never answer with facts we don't have (hours, area, guarantees).
+- **Hero note (wide screens):** a paper note "taped to the wall" next to the sub line, with four ticks (services, no travel costs, one tradesman) and the phone number.
+- **Tape band:** one long strip of tape across the page between hero and services with the services written on it; slow marquee (static with reduced motion).
+- **Layout:** services, price and FAQ get a two-column layout on wide screens (heading sticky on the left). Contact gets address / reachability / work area next to the map.
+- **Statement band:** after "Zo werk ik", a dark (`--ink`) band with Edward's own slogan as a big quote ("Kwaliteit voor een betaalbare prijs. Met goed materiaal, zodat u er jaren plezier van hebt."); the words light up one by one while scrolling.
+- **Texture:** a very fine plaster grain on the `--plaster` ground; the `--wall` contact band stays smooth like fresh paint. The footer ends with a huge, quiet "De-Lina" wordmark in `--wall`.
+- **Footer:** three columns: name + tagline ("Kwaliteit voor een betaalbare prijs"), contact (phone, e-mail, WhatsApp, address), services.
+
 ### Copy (use this, adjust lightly if it doesn't fit)
 
 - **Hero headline:** "Schilderwerk, stucwerk en vloeren. Netjes gedaan."
@@ -97,7 +109,7 @@ A homeowner or small business owner needs a painter or handyman and wants to kno
 | `--wall` | `#FAFAF8` | contact section / alternate band |
 | `--ink` | `#1F2328` | text |
 | `--muted` | `#5B6168` | secondary text |
-| `--tape` | `#2F6DB5` | painter's-tape blue: the only accent. Buttons, the tape strip, links |
+| `--tape` | `#2F6DB5` | painter's-tape blue: the only accent. Buttons, the tape strip, links. (Oct 2026: mocha and dark red were tried; blue was chosen as the best.) |
 | `--tape-dark` | `#24578F` | button hover / focus; text links (`--tape` on plaster is 4.1:1, fails AA) |
 | `--line` | `rgb(31 35 40 / .18)` | service list dividers |
 | `--line-soft` | `rgb(31 35 40 / .1)` | nav and mobile call bar borders |
@@ -136,8 +148,8 @@ Spend all boldness here; keep everything else quiet.
 
 ## 8. Navigation
 
-- Slim top bar: "De-Lina" on the left, "Bel Edward" button on the right. No other links needed on a page this short.
-- Hides when scrolling down, returns when scrolling up or when scrolling stops.
+- Slim top bar: tape-scrap mark + "De-Lina" + "Klussenbedrijf" on the left, "Bel Edward" button on the right; the phone number as text from tablet width; an anchor menu (Diensten, Werkwijze, Prijs, Vragen, Contact) on wide screens, with the current section underlined in tape.
+- Always visible (changed Oct 2026 at the client's request; it used to hide on scroll down).
 - On mobile: also a fixed "Bel Edward" button at the bottom of the screen once the hero is scrolled past (respect `env(safe-area-inset-bottom)`).
 
 ## 9. Never do this

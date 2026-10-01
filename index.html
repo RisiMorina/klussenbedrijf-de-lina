@@ -4,8 +4,33 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Klussenbedrijf De-Lina — schilderwerk, stucwerk en vloeren</title>
-<meta name="description" content="Edward van Klussenbedrijf De-Lina doet schilderwerk binnen en buiten, sauzen, stucwerk, tapijt en laminaat. Geen reiskosten, geen reisuren. Bel 06 42 92 02 03.">
+<meta name="description" content="Edward van Klussenbedrijf De-Lina uit Deventer doet schilderwerk binnen en buiten, sauzen, stucwerk, tapijt en laminaat. Geen reiskosten, geen reisuren. Bel 06 42 92 02 03.">
 <meta name="theme-color" content="#E6E4DF">
+<!-- link preview when the site is shared on WhatsApp / social media -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="nl_NL">
+<meta property="og:title" content="Klussenbedrijf De-Lina — schilderwerk, stucwerk en vloeren">
+<meta property="og:description" content="Schilderwerk binnen en buiten, sauzen, stucwerk, tapijt en laminaat. Geen reiskosten, geen reisuren. Bel Edward: 06 42 92 02 03.">
+<!-- business details for Google (only facts Edward gave us) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HousePainter",
+  "name": "Klussenbedrijf De-Lina",
+  "slogan": "Kwaliteit voor een betaalbare prijs",
+  "telephone": "+31642920203",
+  "email": "hayk23@hotmail.nl",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "P.C. Hooftlaan 58",
+    "postalCode": "7412 PT",
+    "addressLocality": "Deventer",
+    "addressCountry": "NL"
+  },
+  "employee": { "@type": "Person", "name": "Edward" },
+  "knowsAbout": ["Schilderwerk binnen en buiten", "Verven en sauzen", "Stucwerk", "Tapijt leggen, ook op trappen", "Laminaatvloeren"]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='10' width='26' height='12' fill='%232F6DB5' transform='rotate(-6 16 16)'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +55,8 @@
       s.integrity = 'sha384-jqpi9VmOdhyLoLURgjCn7EpnG9BbnHW57ibIZoeaIU+erWDH3k8fQQg0xH2ySjnw';
       s.crossOrigin = 'anonymous';
       s.async = true;
-      s.onload = function () { window.lenis = new Lenis({ lerp: .085, wheelMultiplier: .9, autoRaf: true, anchors: true }); };
+      // anchor offset keeps section headings clear of the (always visible) nav
+      s.onload = function () { window.lenis = new Lenis({ lerp: .085, wheelMultiplier: .9, autoRaf: true, anchors: { offset: -92 } }); };
       document.head.appendChild(s);
     }
   })();
@@ -58,20 +84,34 @@
     --ease: cubic-bezier(.2, .6, .2, 1);
     --ease-out: cubic-bezier(.16, 1, .3, 1);   /* long, calm settle for scroll reveals */
 
+    /* fine plaster grain: neutral noise, only darkens the ground a touch (no new colour) */
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .14 0 0 0 0 .16 .11 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
     /* torn ends of a strip of painter's tape */
     --torn: polygon(0 10%, 1.5% 0, 50% 3%, 98.5% 0, 100% 12%, 99% 38%, 100% 62%, 98.8% 86%, 100% 100%, 50% 97%, 1.2% 100%, 0 88%, 1% 64%, 0 40%, 1.2% 22%);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; scroll-padding-top: var(--nav-h); }
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--nav-h) + 2rem); }
   body {
     margin: 0;
-    background: var(--plaster);
+    background: var(--plaster) var(--grain);
     color: var(--ink);
     font: 400 1.125rem/1.6 var(--font-body);
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, p, ul { margin: 0; }
+  ::selection { background: var(--tape); color: #fff; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* keyboard users can jump straight past the hero */
+  .skip {
+    position: fixed; left: var(--gutter); top: .6rem; z-index: 20;
+    padding: .6rem 1rem; background: var(--ink); color: #fff; font-weight: 600; text-decoration: none; border-radius: 3px;
+    transform: translateY(-200%);
+  }
+  .skip:focus { transform: none; }
+  h1, h2, h3, p, ul, ol { margin: 0; }
+  ol { padding: 0; list-style: none; }
   ul { padding: 0; list-style: none; }
   p { text-wrap: pretty; }
 
@@ -89,26 +129,69 @@
     background: var(--tape); color: #fff;
     font: 600 1.125rem/1 var(--font-body);
     text-decoration: none; border-radius: 3px;
-    transition: background-color .2s ease;
+    position: relative; isolation: isolate; overflow: hidden;
+    transition: transform .15s ease;
   }
-  .btn:hover, .btn:active { background: var(--tape-dark); }
+  /* hover: a darker coat is rolled across the button from the left */
+  .btn::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: var(--tape-dark);
+    transform: scaleX(0); transform-origin: right center;
+    transition: transform .45s var(--ease-out);
+  }
+  .btn:hover::before { transform: scaleX(1); transform-origin: left center; }
+  .btn:active { background: var(--tape-dark); transform: scale(.98); }
   .btn:focus-visible { background: var(--tape-dark); outline-color: var(--ink); }
 
   /* ---------- Nav ---------- */
+  /* always visible; the border only appears once the page has scrolled */
   .nav {
     position: fixed; inset: 0 0 auto; z-index: 10;
     height: var(--nav-h);
-    background: var(--plaster);
-    border-bottom: 1px solid var(--line-soft);
-    transition: transform .35s var(--ease);
+    background: var(--plaster) var(--grain);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s ease;
   }
-  .nav.is-hidden { transform: translateY(-100%); }
-  .nav .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+  .nav.is-scrolled { border-bottom-color: var(--line-soft); }
+  .nav .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
   .logo {
+    display: inline-flex; align-items: center; gap: .6rem;
     color: var(--ink); text-decoration: none;
-    font: 800 1.375rem/1 var(--font-head); font-stretch: 85%; letter-spacing: -.01em;
   }
+  .logo-name { font: 800 1.375rem/1 var(--font-head); font-stretch: 85%; letter-spacing: -.01em; }
+  .logo-sub { color: var(--muted); font-size: .8125rem; font-weight: 600; padding-left: .6rem; border-left: 1px solid var(--line); }
+  @media (max-width: 479px) { .logo-sub { display: none; } }
+  /* the brand mark: a scrap of painter's tape (same as the favicon) */
+  .logo-mark { width: 1.15rem; height: .6rem; background: var(--tape); clip-path: var(--torn); transform: rotate(-8deg); }
+
+  .nav-links { display: none; }
+  @media (min-width: 1180px) {
+    .nav-links { display: flex; gap: 1.75rem; margin-left: auto; margin-right: .5rem; }
+  }
+  .nav-links a {
+    position: relative; padding: .4rem 0;
+    color: var(--ink); text-decoration: none; font-size: .9375rem; font-weight: 600;
+  }
+  .nav-links a:hover, .nav-links a.is-active { color: var(--tape-dark); }
+  .nav-links a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+    background: var(--tape); clip-path: var(--torn);
+    transform: scaleX(0); transform-origin: left center;
+    transition: transform .4s var(--ease-out);
+  }
+  .nav-links a.is-active::after { transform: scaleX(1); }
+
   .nav .btn { min-height: 2.5rem; padding: .55rem 1rem; font-size: 1rem; }
+  .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-phone { color: var(--ink); font-weight: 600; text-decoration: none; }
+  .nav-phone:hover { color: var(--tape-dark); }
+  @media (max-width: 767px) { .nav-phone { display: none; } }
+  /* reading progress: a thin strip of tape along the bottom of the nav */
+  .progress { display: none; }
+  .motion .progress {
+    display: block; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    background: var(--tape); transform: scaleX(0); transform-origin: left center;
+  }
 
   /* ---------- Painter's tape on headings ---------- */
   .taped { position: relative; isolation: isolate; display: inline-block; }
@@ -132,9 +215,23 @@
 
   section { padding: var(--section) 0; }
   .lead { max-width: var(--measure); font-size: var(--text-lead); }
+  /* rotated tape band would otherwise cause sideways scrolling */
+  main { overflow-x: clip; }
+
+  /* editorial two-column layout on wide screens: heading on the left (sticky), content on the right */
+  @media (min-width: 1000px) {
+    .layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(3rem, 6vw, 6rem); align-items: start; }
+    .layout .side { position: sticky; top: calc(var(--nav-h) + 2.5rem); }
+    .layout .main { padding-top: .6rem; }
+    .layout .main, .layout .main > :first-child { margin-top: 0; }
+    .layout .side .lead { margin-bottom: 0; }
+  }
+  .side .cta { margin-top: 2rem; }
 
   /* ---------- Hero ---------- */
   .hero {
+    overflow: clip;   /* the parallax drift never runs into the band below */
+    min-height: min(100svh, 60rem); display: flex; flex-direction: column; justify-content: center;
     padding-top: calc(var(--nav-h) + clamp(4rem, 14vw, 10rem));
     padding-bottom: clamp(3rem, 8vw, 6rem);
   }
@@ -146,6 +243,54 @@
   .actions { margin-top: 2.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; }
   .actions .alt { color: var(--muted); }
   .alt a { display: inline-block; padding: .6rem .15em; }
+
+  /* wide screens: the facts sit on a note taped to the wall, next to the sub line and buttons */
+  .memo { display: none; }
+  @media (min-width: 1000px) {
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; column-gap: 4rem; align-items: start; }
+    .hero-grid h1 { grid-column: 1 / -1; }
+    .memo {
+      display: block; position: relative; margin-top: 2rem;
+      padding: 2rem 1.75rem 1.5rem;
+      background: var(--wall); border: 1px solid var(--line-soft);
+      transform: rotate(1.2deg);
+      font-size: 1rem;
+    }
+    .memo::before, .memo::after {
+      content: ""; position: absolute; top: -.7rem; width: 5rem; height: 1.4rem;
+      background: var(--tape); clip-path: var(--torn);
+    }
+    .memo::before { left: -1.2rem; transform: rotate(-32deg); }
+    .memo::after { right: -1.2rem; transform: rotate(28deg); }
+    .memo-h { font: 800 1.375rem/1.1 var(--font-head); font-stretch: 85%; margin-bottom: 1rem; }
+    .memo li { position: relative; padding: .45rem 0 .45rem 1.6rem; border-top: 1px solid var(--line-soft); }
+    /* a pencil tick */
+    .memo li::before {
+      content: ""; position: absolute; left: .2rem; top: .8rem;
+      width: .4rem; height: .75rem;
+      border: solid var(--tape-dark); border-width: 0 2px 2px 0;
+      transform: rotate(40deg);
+    }
+    .memo-foot { margin-top: 1rem; padding-top: .9rem; border-top: 1px solid var(--line); color: var(--muted); }
+    .memo-foot a { font-weight: 600; }
+  }
+
+  /* ---------- Tape band: one long strip across the wall, the services written on it ---------- */
+  .band {
+    margin: 0 -2rem; padding: 1.1rem 0;
+    background: var(--tape); color: #fff;
+    clip-path: polygon(0 6%, 50% 0, 100% 8%, 100% 94%, 50% 100%, 0 92%);
+    transform: rotate(-1.5deg);
+    overflow: hidden;
+  }
+  .band-track { display: flex; width: max-content; }
+  .band-track span {
+    display: flex; align-items: center; gap: 2rem; padding-right: 2rem; white-space: nowrap;
+    font: 800 clamp(1.5rem, 3vw, 2.25rem)/1 var(--font-head); font-stretch: 85%; letter-spacing: -.005em;
+  }
+  .band-track span::after { content: ""; width: .5em; height: .5em; border: 2px solid currentColor; border-radius: 50%; opacity: .7; }
+  .motion .band-track { animation: band 45s linear infinite; }
+  @keyframes band { to { transform: translateX(-50%); } }
 
   /* ---------- Intro: a brush stroke paints the page open (~1s, scrolling speeds it up) ---------- */
   /* Shown only once the intro script has set it up (html.intro-on), so a broken script never hides the page.
@@ -172,8 +317,90 @@
   .cta { margin-top: 2.75rem; display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; }
   .cta p { color: var(--muted); }
 
+  /* sections that follow another plaster section share its bottom padding */
+  .follows { padding-top: 0; }
+
+  /* service name gets a strip of tape on hover (desktop) */
+  .list .name { position: relative; isolation: isolate; }
+  .list .name::before {
+    content: ""; position: absolute; z-index: -1;
+    left: -.15em; right: -.15em; bottom: .02em; height: .3em;
+    background: var(--tape); clip-path: var(--torn);
+    transform: rotate(-1deg) scaleX(0); transform-origin: left center;
+  }
+  @media (hover: hover) {
+    .list li:hover .name::before { transform: rotate(-1deg) scaleX(1); }
+    .motion .list .name::before { transition: transform .5s var(--ease-out); }
+  }
+
+  /* ---------- How I work ---------- */
+  .steps { display: grid; gap: 2.5rem 2rem; margin-top: 2.5rem; }
+  @media (min-width: 600px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+  .steps li { border-top: 1px solid var(--line); padding-top: 1.5rem; }
+  /* wide screens: a strip of tape runs along the top of the steps as you scroll through them */
+  .steps { position: relative; }
+  @media (min-width: 1000px) {
+    .motion .steps::before {
+      content: ""; position: absolute; z-index: 1; left: 0; right: 0; top: -1px; height: 3px;
+      background: var(--tape); clip-path: var(--torn);
+      transform: scaleX(var(--p, 0)); transform-origin: left center;   /* --p is set by the scroll script */
+    }
+  }
+
+  /* ---------- Statement: Edward's own line on a dark wall ---------- */
+  .statement { background: var(--ink); color: var(--plaster); }
+  .statement figure { margin: 0; max-width: 62rem; position: relative; }
+  .statement figure::before {
+    content: ""; display: block; width: 4.5rem; height: 1.2rem; margin-bottom: 2.25rem;
+    background: var(--tape); clip-path: var(--torn); transform: rotate(-4deg);
+  }
+  .statement blockquote { margin: 0; }
+  .quote {
+    font: 800 clamp(2rem, 5.2vw, 4.25rem)/1.04 var(--font-head); font-stretch: 85%; letter-spacing: -.015em;
+    text-wrap: balance;
+  }
+  .quote .w { transition: opacity .25s linear; }
+  .statement figcaption { margin-top: 2rem; color: var(--plaster); opacity: .75; font-size: 1rem; }
+  .statement figcaption strong { opacity: 1; font-weight: 600; }
+  /* the step number is written on a scrap of painter's tape */
+  .num {
+    display: inline-block; min-width: 2.6em; margin-bottom: 1.1rem;
+    padding: .4em .8em .35em; text-align: center;
+    background: var(--tape); color: #fff;
+    font: 800 1.125rem/1 var(--font-head); font-stretch: 85%;
+    clip-path: var(--torn); transform: rotate(var(--r, -2deg));
+  }
+  .steps li:nth-child(even) { --r: 1.5deg; }
+  .steps h3, .points strong {
+    display: block;
+    font: 800 clamp(1.375rem, 2.2vw, 1.75rem)/1.08 var(--font-head); font-stretch: 85%; letter-spacing: -.01em;
+  }
+  .steps p { margin-top: .5rem; color: var(--muted); }
+
   /* ---------- Price ---------- */
-  .price { padding-top: 0; }
+  .points { max-width: 52rem; margin-top: 2.5rem; border-top: 1px solid var(--line); display: grid; column-gap: 3rem; }
+  @media (min-width: 768px) { .points { grid-template-columns: 1fr 1fr; } }
+  .points li { padding: 1.1rem 0; border-bottom: 1px solid var(--line); }
+  .points span { color: var(--muted); }
+
+  /* ---------- FAQ ---------- */
+  .faq-list { max-width: 52rem; margin-top: 2.5rem; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding: 1.1rem 0; cursor: pointer; list-style: none;
+    font: 800 clamp(1.25rem, 2.2vw, 1.625rem)/1.15 var(--font-head); font-stretch: 85%; letter-spacing: -.01em;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+"; flex: none; color: var(--tape-dark);
+    font-size: 1.4em; line-height: .7;
+    transition: transform .25s var(--ease);
+  }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq summary:hover { color: var(--tape-dark); }
+  .faq details p { max-width: var(--measure); padding-bottom: 1.25rem; color: var(--muted); }
 
   /* ---------- Contact ---------- */
   .contact { background: var(--wall); }
@@ -183,12 +410,56 @@
     font: 800 clamp(2.6rem, 8vw, 6rem)/1 var(--font-head); font-stretch: 85%; letter-spacing: -.01em;
   }
   .phone:hover { color: var(--tape-dark); }
+  /* same tape strip as the service names, under the number on hover */
+  .phone { position: relative; isolation: isolate; }
+  .phone::before {
+    content: ""; position: absolute; z-index: -1;
+    left: -.1em; right: -.1em; bottom: .02em; height: .22em;
+    background: var(--tape); clip-path: var(--torn); opacity: .9;
+    transform: rotate(-1deg) scaleX(0); transform-origin: left center;
+    transition: transform .6s var(--ease-out);
+  }
+  @media (hover: hover) { .phone:hover::before { transform: rotate(-1deg) scaleX(1); } }
   .contact .actions { margin-top: 1.75rem; }
-  .details { margin-top: 2rem; }
-  .details .area { color: var(--muted); }
+  /* details on the left, map on the right (stacked on small screens) */
+  .contact-grid { display: grid; gap: 2rem 4rem; margin-top: clamp(3rem, 6vw, 4.5rem); padding-top: 2.5rem; border-top: 1px solid var(--line); }
+  @media (min-width: 900px) { .contact-grid { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); } }
+  .facts { display: grid; gap: 1.5rem; align-content: start; }
+  .facts dt { margin-bottom: .2rem; font: 800 1.125rem/1.2 var(--font-head); font-stretch: 85%; }
+  .facts dd { margin: 0; color: var(--muted); }
+  .facts address { font-style: normal; }
+  .facts dd a { font-weight: 600; }
+  .map { aspect-ratio: 16 / 10; background: var(--plaster); border: 1px solid var(--line); }
+  .map iframe { display: block; width: 100%; height: 100%; border: 0; }
+  @media (max-width: 640px) { .map { aspect-ratio: 4 / 3; } }
   .todo { color: var(--ink); padding: 0 .3em; margin-left: .3em; font-weight: 600; outline: 2px dashed var(--tape-dark); outline-offset: 1px; }
 
-  footer { padding: 2rem 0 calc(2rem + env(safe-area-inset-bottom)); color: var(--muted); font-size: .9375rem; }
+  footer { padding: clamp(3rem, 7vw, 5rem) 0 calc(2rem + env(safe-area-inset-bottom)); color: var(--muted); font-size: .9375rem; }
+  .foot { display: grid; gap: 2.25rem 2rem; }
+  @media (min-width: 768px) { .foot { grid-template-columns: 1.5fr 1fr 1fr; } }
+  .foot .logo { margin-bottom: .75rem; }
+  .foot-h { margin-bottom: .6rem; color: var(--ink); font: 800 1.125rem/1.2 var(--font-head); font-stretch: 85%; }
+  .foot li { padding: .15rem 0; }
+  .foot address { font-style: normal; }
+  .legal {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem;
+    margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line-soft);
+  }
+  .legal a { color: var(--muted); }
+  /* the name, very large and quiet, like fresh paint on the plaster */
+  /* it sits behind the footer text, centred and cropped at the bottom edge */
+  footer { overflow: hidden; position: relative; isolation: isolate; }
+  .wordmark {
+    position: absolute; z-index: -1; left: 50%; bottom: -.1em;
+    transform: translateX(-50%);
+    margin: 0; color: var(--wall); pointer-events: none;
+    font: 800 clamp(5rem, 25vw, 23rem)/.8 var(--font-head); font-stretch: 85%; letter-spacing: -.035em;
+    white-space: nowrap; user-select: none;
+  }
+  /* phones: the footer keeps room for the call bar at the bottom, so lift the name up behind the text */
+  @media (max-width: 640px) {
+    .wordmark { font-size: 29vw; bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+  }
 
   /* ---------- Mobile call bar ---------- */
   .callbar { display: none; }
@@ -199,7 +470,7 @@
       display: flex; gap: .75rem; align-items: center;
       position: fixed; inset: auto 0 0; z-index: 9;
       padding: .75rem var(--gutter) calc(.75rem + env(safe-area-inset-bottom));
-      background: var(--plaster);
+      background: var(--plaster) var(--grain);
       border-top: 1px solid var(--line-soft);
       transform: translateY(110%);
       visibility: hidden;
@@ -224,6 +495,8 @@
 
   /* ---------- Smooth scrolling (Lenis' required CSS) ---------- */
   html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  html.motion { scroll-behavior: smooth; }   /* menu links glide on touch devices too */
   .lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
 
   /* ---------- Scroll motion (only with html.motion: JS on, no reduced motion) ---------- */
@@ -233,6 +506,29 @@
     transition-delay: var(--d, 0ms);
   }
   .motion .reveal.in { opacity: 1; transform: none; }
+
+  /* divider lines are drawn in from the left, like a pencil line along a ruler */
+  .motion :is(.list li, .points li).reveal { position: relative; border-bottom-color: transparent; }
+  .motion .steps li.reveal { position: relative; border-top-color: transparent; }
+  .motion :is(.list li, .points li, .steps li).reveal::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+    background: var(--line);
+    transform: scaleX(0); transform-origin: left center;
+    transition: transform 1.4s var(--ease-out) calc(var(--d, 0ms) + 120ms);
+  }
+  .motion .steps li.reveal::after { top: -1px; bottom: auto; }
+  .motion :is(.list li, .points li, .steps li).in::after { transform: none; }
+
+  /* step numbers are pressed on like a scrap of tape: a little big and crooked, then flat */
+  .motion .steps .num {
+    opacity: 0; transform: rotate(calc(var(--r, -2deg) - 7deg)) scale(1.3);
+    transition: opacity .35s ease calc(var(--d, 0ms) + 250ms), transform .7s var(--ease-out) calc(var(--d, 0ms) + 250ms);
+  }
+  .motion .steps .in .num { opacity: 1; transform: rotate(var(--r, -2deg)); }
+
+  /* FAQ answers ease in when opened */
+  .motion .faq details[open] p { animation: faq-in .5s var(--ease-out); }
+  @keyframes faq-in { from { opacity: 0; transform: translateY(-.5rem); } }
 
   /* headings: split into lines by JS, each line slides up from behind its own mask */
   .motion [data-split]:not(.split) { opacity: 0; }
@@ -254,9 +550,16 @@
   /* hero drifts slower than the page; transform/opacity are set by JS */
   .motion .hero .wrap { will-change: transform; }
 
+  @media print {
+    .nav, .callbar, .intro, .band, .map, .skip, .wordmark { display: none !important; }
+    body { background: #fff; }
+    .reveal, [data-split], .split .line > span { opacity: 1 !important; transform: none !important; }
+    .statement { background: none; color: var(--ink); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .intro { display: none !important; }
-    .nav, .callbar, .btn { transition: none; }
+    .nav, .callbar, .btn, .btn::before, .phone::before, .faq summary::after, .nav-links a::after { transition: none; }
   }
 </style>
 </head>
@@ -379,30 +682,66 @@
 })();
 </script>
 
+<a class="skip" href="#diensten">Naar de inhoud</a>
+
 <header class="nav" id="nav">
   <div class="wrap">
-    <a class="logo" href="#top">De-Lina</a>
-    <a class="btn" href="tel:+31642920203">Bel Edward</a>
+    <a class="logo" href="#top" aria-label="Klussenbedrijf De-Lina, naar boven"><span class="logo-mark" aria-hidden="true"></span><span class="logo-name">De-Lina</span><span class="logo-sub">Klussenbedrijf</span></a>
+    <nav class="nav-links" aria-label="Hoofdmenu">
+      <a href="#diensten">Diensten</a>
+      <a href="#werkwijze">Werkwijze</a>
+      <a href="#prijs">Prijs</a>
+      <a href="#vragen">Vragen</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="nav-phone" href="tel:+31642920203">06 42 92 02 03</a>
+      <a class="btn" href="tel:+31642920203">Bel Edward</a>
+    </div>
   </div>
+  <span class="progress" id="progress" aria-hidden="true"></span>
 </header>
 
 <main id="top">
 
   <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap">
+    <div class="wrap hero-grid">
       <h1 id="hero-title">Schilderwerk, stucwerk en vloeren. Netjes gedaan.</h1>
-      <p class="sub">Binnen en buiten. Geen reiskosten, geen reisuren.</p>
-      <div class="actions">
-        <a class="btn" href="tel:+31642920203">Bel Edward</a>
-        <span class="alt">of <a href="mailto:hayk23@hotmail.nl">mail</a><span class="wa"> of <a href="https://wa.me/31642920203">app</a></span></span>
+      <div>
+        <p class="sub">Binnen en buiten. Geen reiskosten, geen reisuren.</p>
+        <div class="actions">
+          <a class="btn" href="tel:+31642920203">Bel Edward</a>
+          <span class="alt">of <a href="mailto:hayk23@hotmail.nl">mail</a><span class="wa"> of <a href="https://wa.me/31642920203">app</a></span></span>
+        </div>
       </div>
+      <aside class="memo" aria-label="In het kort">
+        <p class="memo-h">Klussenbedrijf De-Lina</p>
+        <ul>
+          <li>Schilderwerk, binnen en buiten</li>
+          <li>Sauzen, stucwerk en vloeren</li>
+          <li>Geen reiskosten of reisuren</li>
+          <li>Eén vaste vakman: Edward</li>
+        </ul>
+        <p class="memo-foot">Deventer · <a href="tel:+31642920203">06 42 92 02 03</a></p>
+      </aside>
     </div>
   </section>
 
-  <section class="services" aria-labelledby="services-title">
-    <div class="wrap">
-      <h2 id="services-title" data-split><span class="taped">Wat ik doe</span></h2>
-      <p class="lead reveal">Van een kamer sauzen tot een nieuwe vloer. Ik werk met goed materiaal, zodat u er jaren plezier van hebt.</p>
+  <!-- one long strip of tape across the wall; decorative, the services are listed below -->
+  <div class="band" aria-hidden="true">
+    <div class="band-track">
+      <span>Schilderwerk</span><span>Verven en sauzen</span><span>Stucwerk</span><span>Tapijt</span><span>Laminaat</span><span>Binnen en buiten</span>
+      <span>Schilderwerk</span><span>Verven en sauzen</span><span>Stucwerk</span><span>Tapijt</span><span>Laminaat</span><span>Binnen en buiten</span>
+    </div>
+  </div>
+
+  <section class="services" id="diensten" aria-labelledby="services-title">
+    <div class="wrap layout">
+      <div class="side">
+        <h2 id="services-title" data-split><span class="taped">Wat ik doe</span></h2>
+        <p class="lead reveal">Van een kamer sauzen tot een nieuwe vloer. Ik werk met goed materiaal, zodat u er jaren plezier van hebt.</p>
+      </div>
+      <div class="main">
       <ul class="list">
         <li class="reveal"><span class="name">Schilderwerk</span><span class="note">binnen en buiten</span></li>
         <li class="reveal"><span class="name">Verven en sauzen</span></li>
@@ -413,6 +752,7 @@
       <div class="cta">
         <a class="btn" href="tel:+31642920203">Bel Edward</a>
         <p>Vertel wat er moet gebeuren.</p>
+      </div>
       </div>
     </div>
   </section>
@@ -429,10 +769,56 @@
   </section>
   -->
 
-  <section class="price" aria-labelledby="price-title">
+  <section class="how follows" id="werkwijze" aria-labelledby="how-title">
     <div class="wrap">
-      <h2 id="price-title" data-split><span class="taped">Eerlijke prijs</span></h2>
-      <p class="lead reveal">U betaalt geen reiskosten en geen reisuren. Over de prijs komen we samen altijd uit.</p>
+      <h2 id="how-title" data-split><span class="taped">Zo werk ik</span></h2>
+      <ol class="steps">
+        <li class="reveal"><span class="num" aria-hidden="true">1</span><h3>U belt of appt</h3><p>Vertel kort wat er moet gebeuren.</p></li>
+        <li class="reveal"><span class="num" aria-hidden="true">2</span><h3>Ik kom kijken</h3><p>Ik bekijk de klus bij u ter plekke.</p></li>
+        <li class="reveal"><span class="num" aria-hidden="true">3</span><h3>U hoort wat het kost</h3><p>Eerlijk en duidelijk, voordat ik begin.</p></li>
+        <li class="reveal"><span class="num" aria-hidden="true">4</span><h3>Ik ga aan de slag</h3><p>Met goed materiaal, netjes afgewerkt.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="statement" aria-label="Edward over zijn werk">
+    <div class="wrap">
+      <figure>
+        <blockquote><p class="quote" id="quote">Kwaliteit voor een betaalbare prijs. Met goed materiaal, zodat u er jaren plezier van hebt.</p></blockquote>
+        <figcaption><strong>Edward</strong> · Klussenbedrijf De-Lina</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="price" id="prijs" aria-labelledby="price-title">
+    <div class="wrap layout">
+      <div class="side">
+        <h2 id="price-title" data-split><span class="taped">Eerlijke prijs</span></h2>
+        <p class="lead reveal">Over de prijs komen we samen altijd uit. Daar kunt u op rekenen.</p>
+      </div>
+      <ul class="points main">
+        <li class="reveal"><strong>Geen reiskosten</strong><span>En ook geen reisuren.</span></li>
+        <li class="reveal"><strong>Vooraf duidelijk</strong><span>U weet wat het kost voordat ik begin.</span></li>
+        <li class="reveal"><strong>Goed materiaal</strong><span>Zodat u er jaren plezier van hebt.</span></li>
+        <li class="reveal"><strong>Eén vakman</strong><span>U hebt alleen met mij te maken.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="faq follows" id="vragen" aria-labelledby="faq-title">
+    <div class="wrap layout">
+      <div class="side">
+        <h2 id="faq-title" data-split><span class="taped">Goed om te weten</span></h2>
+        <p class="lead reveal">Staat uw vraag er niet bij? Bel gerust, dan hoort u het meteen.</p>
+        <div class="cta"><a class="btn" href="tel:+31642920203">Bel Edward</a></div>
+      </div>
+      <div class="faq-list main">
+        <details class="reveal"><summary>Wat kost een klus?</summary><p>Dat hangt af van het werk. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p></details>
+        <details class="reveal"><summary>Werkt u ook buiten?</summary><p>Ja. Schilderwerk doe ik binnen en buiten.</p></details>
+        <details class="reveal"><summary>Legt u ook tapijt op de trap?</summary><p>Ja, ik leg tapijt ook op trappen.</p></details>
+        <details class="reveal"><summary>Met wie heb ik te maken?</summary><p>Met mij, Edward. Ik werk alleen en doe het werk zelf.</p></details>
+        <details class="reveal"><summary>Kan ik ook een bericht sturen?</summary><p>Zeker. Via <a href="https://wa.me/31642920203">WhatsApp</a> of per <a href="mailto:hayk23@hotmail.nl">e-mail</a>.</p></details>
+      </div>
     </div>
   </section>
 
@@ -445,8 +831,25 @@
         <a class="btn" href="tel:+31642920203">Bel Edward</a>
         <span class="alt">of <a href="mailto:hayk23@hotmail.nl">hayk23@hotmail.nl</a></span>
       </div>
-      <div class="details reveal">
-        <p class="area">Werkgebied: <span class="todo">TODO</span></p>
+      <div class="contact-grid">
+        <dl class="facts">
+          <div>
+            <dt>Adres</dt>
+            <dd><address>P.C. Hooftlaan 58<br>7412 PT Deventer</address>
+              <a href="https://www.google.com/maps/search/?api=1&amp;query=P.C.+Hooftlaan+58%2C+7412+PT+Deventer">Open in Google Maps</a></dd>
+          </div>
+          <div>
+            <dt>Bereikbaar via</dt>
+            <dd>Telefoon, <a href="https://wa.me/31642920203">WhatsApp</a> of <a href="mailto:hayk23@hotmail.nl">e-mail</a></dd>
+          </div>
+          <div>
+            <dt>Werkgebied</dt>
+            <dd><span class="todo">TODO</span></dd>
+          </div>
+        </dl>
+        <div class="map reveal">
+          <iframe src="https://www.google.com/maps?q=P.C.+Hooftlaan+58,+7412+PT+Deventer&amp;z=15&amp;output=embed" title="Kaart: P.C. Hooftlaan 58, Deventer" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
       </div>
     </div>
   </section>
@@ -455,7 +858,36 @@
 
 <footer>
   <div class="wrap">
-    <p>Klussenbedrijf De-Lina · Edward · KvK <span class="todo">TODO</span></p>
+    <div class="foot">
+      <div>
+        <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true"></span><span class="logo-name">De-Lina</span></a>
+        <p>Kwaliteit voor een betaalbare prijs.<br>Schilderwerk, stucwerk en vloeren door Edward.</p>
+      </div>
+      <div>
+        <p class="foot-h">Contact</p>
+        <ul>
+          <li><a href="tel:+31642920203">06 42 92 02 03</a></li>
+          <li><a href="mailto:hayk23@hotmail.nl">hayk23@hotmail.nl</a></li>
+          <li><a href="https://wa.me/31642920203">WhatsApp</a></li>
+          <li><address>P.C. Hooftlaan 58<br>7412 PT Deventer</address></li>
+        </ul>
+      </div>
+      <div>
+        <p class="foot-h">Diensten</p>
+        <ul>
+          <li>Schilderwerk, binnen en buiten</li>
+          <li>Verven en sauzen</li>
+          <li>Stucwerk</li>
+          <li>Tapijt, ook op trappen</li>
+          <li>Laminaat</li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© <span id="year">2026</span> Klussenbedrijf De-Lina · Edward · KvK <span class="todo">TODO</span></p>
+      <a href="#top">Naar boven</a>
+    </div>
+    <p class="wordmark" aria-hidden="true">De-Lina</p>
   </div>
 </footer>
 
@@ -469,18 +901,13 @@
   var nav = document.getElementById('nav');
   var bar = document.getElementById('callbar');
   var hero = document.querySelector('.hero');
-  var lastY = window.scrollY, idle;
+  var year = document.getElementById('year');
+  if (year) year.textContent = new Date().getFullYear();
 
-  // Nav: hide on scroll down, show on scroll up or when scrolling stops
-  window.addEventListener('scroll', function () {
-    var y = window.scrollY;
-    if (document.documentElement.classList.contains('intro-on')) { lastY = y; return; }   // nav never hides during the intro
-    if (y > lastY && y > 80 && !nav.contains(document.activeElement)) nav.classList.add('is-hidden');
-    else if (y < lastY) nav.classList.remove('is-hidden');
-    lastY = y;
-    clearTimeout(idle);
-    idle = setTimeout(function () { nav.classList.remove('is-hidden'); }, 700);
-  }, { passive: true });
+  // Nav: always visible; its bottom border appears once the page has scrolled
+  function navState() { nav.classList.toggle('is-scrolled', window.scrollY > 8); }
+  window.addEventListener('scroll', navState, { passive: true });
+  navState();
 
   var motion = document.documentElement.classList.contains('motion');
   var animated = document.querySelectorAll('.reveal');
@@ -495,6 +922,20 @@
   new IntersectionObserver(function (entries) {
     bar.classList.toggle('is-visible', !entries[0].isIntersecting);
   }).observe(hero);
+
+  // Menu: underline the section that is in the middle of the screen
+  var links = {};
+  nav.querySelectorAll('.nav-links a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  var spy = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      var a = links[e.target.id];
+      if (!a) return;
+      if (e.isIntersecting) {
+        Object.keys(links).forEach(function (id) { links[id].classList.toggle('is-active', links[id] === a); });
+      } else a.classList.remove('is-active');
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  Object.keys(links).forEach(function (id) { var s = document.getElementById(id); if (s) spy.observe(s); });
 
   if (!motion) return;
 
@@ -560,10 +1001,45 @@
   var heroWrap = hero.querySelector('.wrap');
   var heroFade = hero.querySelectorAll('h1, .sub');   // never the buttons
   var photos = document.querySelectorAll('[data-parallax]');
+  var progress = document.getElementById('progress');
+  var steps = document.querySelector('.steps');
+
+  // Statement: split into words, which light up one after another as it scrolls through the screen
+  var quote = document.getElementById('quote'), words = [];
+  if (quote) {
+    var qText = quote.textContent.trim();
+    quote.textContent = '';
+    var plain = document.createElement('span');   // screen readers get the sentence in one piece
+    plain.className = 'sr'; plain.textContent = qText;
+    quote.appendChild(plain);
+    qText.split(/\s+/).forEach(function (w) {
+      var s = document.createElement('span');
+      s.className = 'w'; s.textContent = w; s.setAttribute('aria-hidden', 'true');
+      quote.appendChild(s); quote.appendChild(document.createTextNode(' '));
+      words.push(s);
+    });
+  }
+  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
   var ticking = false;
   function update() {
     ticking = false;
     var y = scrollY, vh = innerHeight, hh = hero.offsetHeight;
+    var max = document.documentElement.scrollHeight - vh;
+    progress.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0).toFixed(4) + ')';
+
+    // steps: the tape fills from when they enter the lower part of the screen until they reach the middle
+    var sr = steps.getBoundingClientRect();
+    steps.style.setProperty('--p', clamp01((vh * .9 - sr.top) / (vh * .5)).toFixed(3));
+
+    // statement words: from dim to full as the quote moves from 85% to 35% of the screen height
+    if (words.length) {
+      var qr = quote.getBoundingClientRect();
+      var lit = clamp01((vh * .85 - qr.top) / (vh * .5)) * words.length;
+      words.forEach(function (w, i) {
+        var o = (.22 + .78 * clamp01(lit - i)).toFixed(2);
+        if (w.style.opacity !== o) w.style.opacity = o;
+      });
+    }
     if (y <= hh * 1.2) {
       var p = Math.min(y / hh, 1);
       heroWrap.style.transform = 'translate3d(0,' + (y * .22).toFixed(1) + 'px,0)';
