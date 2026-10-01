@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Klussenbedrijf De-Lina — schilderwerk, stucwerk en vloeren</title>
+<meta name="description" content="Edward van Klussenbedrijf De-Lina doet schilderwerk binnen en buiten, sauzen, stucwerk, tapijt en laminaat. Geen reiskosten, geen reisuren. Bel 06 42 92 02 03.">
+<meta name="theme-color" content="#E6E4DF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='10' width='26' height='12' fill='%232F6DB5' transform='rotate(-6 16 16)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@85,800&family=Public+Sans:wght@400;600&display=swap">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+  :root {
+    --plaster: #E6E4DF;
+    --wall: #FAFAF8;
+    --ink: #1F2328;
+    --muted: #5B6168;
+    --tape: #2F6DB5;
+    --tape-dark: #24578F;
+    --line: rgb(31 35 40 / .18);
+    --line-soft: rgb(31 35 40 / .1);
+
+    --font-head: "Archivo", system-ui, sans-serif;
+    --font-body: "Public Sans", system-ui, sans-serif;
+
+    --gutter: clamp(1.25rem, 5vw, 4rem);
+    --section: clamp(4.5rem, 12vw, 9rem);
+    --measure: 60ch;
+    --text-lead: clamp(1.125rem, 1.6vw, 1.375rem);
+    --btn-h: 3.5rem;
+    --nav-h: 3.75rem;
+    --ease: cubic-bezier(.2, .6, .2, 1);
+
+    /* torn ends of a strip of painter's tape */
+    --torn: polygon(0 10%, 1.5% 0, 50% 3%, 98.5% 0, 100% 12%, 99% 38%, 100% 62%, 98.8% 86%, 100% 100%, 50% 97%, 1.2% 100%, 0 88%, 1% 64%, 0 40%, 1.2% 22%);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: var(--nav-h); }
+  body {
+    margin: 0;
+    background: var(--plaster);
+    color: var(--ink);
+    font: 400 1.125rem/1.6 var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, p, ul { margin: 0; }
+  ul { padding: 0; list-style: none; }
+  p { text-wrap: pretty; }
+
+  a { color: var(--tape-dark); text-underline-offset: .2em; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 3px solid var(--tape-dark); outline-offset: 3px; border-radius: 2px; }
+  a:not(.btn):focus-visible { outline-offset: 2px; }
+
+  .wrap { width: 100%; max-width: 76rem; margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: var(--btn-h); padding: .9rem 1.75rem;
+    background: var(--tape); color: #fff;
+    font: 600 1.125rem/1 var(--font-body);
+    text-decoration: none; border-radius: 3px;
+    transition: background-color .2s ease;
+  }
+  .btn:hover, .btn:active { background: var(--tape-dark); }
+  .btn:focus-visible { background: var(--tape-dark); outline-color: var(--ink); }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: fixed; inset: 0 0 auto; z-index: 10;
+    height: var(--nav-h);
+    background: var(--plaster);
+    border-bottom: 1px solid var(--line-soft);
+    transition: transform .35s var(--ease);
+  }
+  .nav.is-hidden { transform: translateY(-100%); }
+  .nav .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+  .logo {
+    color: var(--ink); text-decoration: none;
+    font: 800 1.375rem/1 var(--font-head); font-stretch: 85%; letter-spacing: -.01em;
+  }
+  .nav .btn { min-height: 2.5rem; padding: .55rem 1rem; font-size: 1rem; }
+
+  /* ---------- Painter's tape on headings ---------- */
+  .taped { position: relative; isolation: isolate; display: inline-block; }
+  .taped::before {
+    content: "";
+    position: absolute; z-index: -1;
+    left: -.3em; bottom: -.14em;
+    width: calc(100% + .6em); height: .4em;
+    background: var(--tape);
+    clip-path: var(--torn);
+    transform: rotate(-1.5deg);
+    transform-origin: left center;
+  }
+
+  h1, h2 {
+    font-family: var(--font-head); font-weight: 800; font-stretch: 85%;
+    letter-spacing: -.015em; line-height: .98;
+    text-wrap: balance;
+  }
+  h2 { font-size: clamp(2.25rem, 5.5vw, 4rem); margin-bottom: 1.75rem; }
+
+  section { padding: var(--section) 0; }
+  .lead { max-width: var(--measure); font-size: var(--text-lead); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding-top: calc(var(--nav-h) + clamp(4rem, 14vw, 10rem));
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+  }
+  .hero h1 {
+    position: relative;
+    font-size: clamp(2.6rem, 8vw, 6rem);
+    max-width: 15em;
+  }
+  .hero .sub { margin-top: 1.75rem; font-size: var(--text-lead); color: var(--muted); max-width: var(--measure); }
+  .actions { margin-top: 2.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; }
+  .actions .alt { color: var(--muted); }
+  .alt a { display: inline-block; padding: .6rem .15em; }
+
+  /* the strip that peels away on load */
+  .peel {
+    position: absolute; z-index: 1;
+    inset: -.06em -.25em -.1em -.3em;
+    pointer-events: none;
+    animation: peel 900ms cubic-bezier(.55, 0, .25, 1) 350ms both;
+  }
+  .peel::before {
+    content: ""; position: absolute; inset: 0;
+    background: var(--tape);
+    clip-path: var(--torn);
+    transform: rotate(-1deg);
+  }
+  @keyframes peel {
+    0%   { clip-path: inset(-20% -5% -20% 0); transform: none; }
+    100% { clip-path: inset(-20% -5% -20% 106%); transform: translate(.15em, -.25em) rotate(-2deg); visibility: hidden; }
+  }
+
+  /* ---------- Services ---------- */
+  .services .lead { margin-bottom: 2.5rem; }
+  .list { max-width: 52rem; border-top: 1px solid var(--line); }
+  .list li {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .list .name {
+    font: 800 clamp(1.625rem, 3.4vw, 2.5rem)/1.05 var(--font-head); font-stretch: 85%; letter-spacing: -.01em;
+  }
+  .list .note { color: var(--muted); }
+  .list .note::before { content: "— "; }
+  .cta { margin-top: 2.75rem; display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; }
+  .cta p { color: var(--muted); }
+
+  /* ---------- Price ---------- */
+  .price { padding-top: 0; }
+
+  /* ---------- Contact ---------- */
+  .contact { background: var(--wall); }
+  .phone {
+    display: inline-block; margin-top: 2rem;
+    color: var(--ink); text-decoration: none; white-space: nowrap;
+    font: 800 clamp(2.6rem, 8vw, 6rem)/1 var(--font-head); font-stretch: 85%; letter-spacing: -.01em;
+  }
+  .phone:hover { color: var(--tape-dark); }
+  .contact .actions { margin-top: 1.75rem; }
+  .details { margin-top: 2rem; }
+  .details .area { color: var(--muted); }
+  .todo { color: var(--ink); padding: 0 .3em; margin-left: .3em; font-weight: 600; outline: 2px dashed var(--tape-dark); outline-offset: 1px; }
+
+  footer { padding: 2rem 0 calc(2rem + env(safe-area-inset-bottom)); color: var(--muted); font-size: .9375rem; }
+
+  /* ---------- Mobile call bar ---------- */
+  .callbar { display: none; }
+  .wa { display: none; }
+  @media (max-width: 640px) {
+    .wa { display: inline; }
+    .callbar {
+      display: flex; gap: .75rem; align-items: center;
+      position: fixed; inset: auto 0 0; z-index: 9;
+      padding: .75rem var(--gutter) calc(.75rem + env(safe-area-inset-bottom));
+      background: var(--plaster);
+      border-top: 1px solid var(--line-soft);
+      transform: translateY(110%);
+      visibility: hidden;
+      transition: transform .35s var(--ease), visibility 0s .35s;
+    }
+    .callbar.is-visible { transform: none; visibility: visible; transition: transform .35s var(--ease); }
+    .callbar .btn { flex: 1; min-height: 3.25rem; }
+    .callbar a:not(.btn) { padding: .75rem .5rem; font-weight: 600; }
+    footer { padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }
+  }
+
+  /* ---------- Scroll reveal (only when JS runs) ---------- */
+  .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 1s ease, transform 1s var(--ease); }
+  .js .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .peel { display: none; }
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+    .nav, .callbar, .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top">De-Lina</a>
+    <a class="btn" href="tel:+31642920203">Bel Edward</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <h1 id="hero-title">Schilderwerk, stucwerk en vloeren. Netjes gedaan.<span class="peel" aria-hidden="true"></span></h1>
+      <p class="sub">Binnen en buiten. Geen reiskosten, geen reisuren.</p>
+      <div class="actions">
+        <a class="btn" href="tel:+31642920203">Bel Edward</a>
+        <span class="alt">of <a href="mailto:hayk23@hotmail.nl">mail</a><span class="wa"> of <a href="https://wa.me/31642920203">app</a></span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" aria-labelledby="services-title">
+    <div class="wrap">
+      <h2 id="services-title" class="reveal"><span class="taped">Wat ik doe</span></h2>
+      <p class="lead reveal">Van een kamer sauzen tot een nieuwe vloer. Ik werk met goed materiaal, zodat u er jaren plezier van hebt.</p>
+      <ul class="list reveal">
+        <li><span class="name">Schilderwerk</span><span class="note">binnen en buiten</span></li>
+        <li><span class="name">Verven en sauzen</span></li>
+        <li><span class="name">Stucwerk</span></li>
+        <li><span class="name">Tapijt</span><span class="note">ook op trappen</span></li>
+        <li><span class="name">Laminaat</span></li>
+      </ul>
+      <div class="cta reveal">
+        <a class="btn" href="tel:+31642920203">Bel Edward</a>
+        <p>Vertel wat er moet gebeuren.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TODO: Werk-sectie met 4–6 echte foto's van Edward (in /images, full-width, liggend). Weggelaten tot er foto's zijn. -->
+
+  <section class="price" aria-labelledby="price-title">
+    <div class="wrap">
+      <h2 id="price-title" class="reveal"><span class="taped">Eerlijke prijs</span></h2>
+      <p class="lead reveal">U betaalt geen reiskosten en geen reisuren. Over de prijs komen we samen altijd uit.</p>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <h2 id="contact-title" class="reveal"><span class="taped">Even kennismaken?</span></h2>
+      <p class="lead reveal">Bel of app gerust. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p>
+      <a class="phone reveal" href="tel:+31642920203" aria-label="Bel Edward: 06 42 92 02 03">06 42 92 02 03</a>
+      <div class="actions reveal">
+        <a class="btn" href="tel:+31642920203">Bel Edward</a>
+        <span class="alt">of <a href="mailto:hayk23@hotmail.nl">hayk23@hotmail.nl</a></span>
+      </div>
+      <div class="details reveal">
+        <p class="area">Werkgebied: <span class="todo">TODO</span></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Klussenbedrijf De-Lina · Edward · KvK <span class="todo">TODO</span></p>
+  </div>
+</footer>
+
+<div class="callbar" id="callbar">
+  <a class="btn" href="tel:+31642920203">Bel Edward</a>
+  <a href="https://wa.me/31642920203">WhatsApp</a>
+</div>
+
+<script>
+(function () {
+  var nav = document.getElementById('nav');
+  var bar = document.getElementById('callbar');
+  var hero = document.querySelector('.hero');
+  var lastY = window.scrollY, idle;
+
+  // Nav: hide on scroll down, show on scroll up or when scrolling stops
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY;
+    if (y > lastY && y > 80 && !nav.contains(document.activeElement)) nav.classList.add('is-hidden');
+    else if (y < lastY) nav.classList.remove('is-hidden');
+    lastY = y;
+    clearTimeout(idle);
+    idle = setTimeout(function () { nav.classList.remove('is-hidden'); }, 700);
+  }, { passive: true });
+
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+    return;
+  }
+
+  // Mobile call bar: visible once the hero is scrolled past
+  new IntersectionObserver(function (entries) {
+    bar.classList.toggle('is-visible', !entries[0].isIntersecting);
+  }).observe(hero);
+
+  // Content fades in with a slight upward drift
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
