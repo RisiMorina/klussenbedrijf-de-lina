@@ -18,6 +18,8 @@
   "@type": "HousePainter",
   "name": "Klussenbedrijf De-Lina",
   "slogan": "Kwaliteit voor een betaalbare prijs",
+  "logo": "images/logo.png",
+  "image": "images/logo.png",
   "telephone": "+31642920203",
   "email": "hayk23@hotmail.nl",
   "address": {
@@ -31,7 +33,24 @@
   "knowsAbout": ["Schilderwerk binnen en buiten", "Verven en sauzen", "Stucwerk", "Tapijt leggen, ook op trappen", "Laminaatvloeren"]
 }
 </script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='10' width='26' height='12' fill='%232F6DB5' transform='rotate(-6 16 16)'/%3E%3C/svg%3E">
+<!-- the same questions as "Goed om te weten", so Google can show them in search results; keep both in sync -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Wat kost een klus?", "acceptedAnswer": { "@type": "Answer", "text": "Dat hangt af van het werk. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost." } },
+    { "@type": "Question", "name": "Werkt u ook buiten?", "acceptedAnswer": { "@type": "Answer", "text": "Ja. Schilderwerk doe ik binnen en buiten." } },
+    { "@type": "Question", "name": "Legt u ook tapijt op de trap?", "acceptedAnswer": { "@type": "Answer", "text": "Ja, ik leg tapijt ook op trappen." } },
+    { "@type": "Question", "name": "Met wie heb ik te maken?", "acceptedAnswer": { "@type": "Answer", "text": "Met mij, Edward. Ik werk alleen en doe het werk zelf." } },
+    { "@type": "Question", "name": "Waar zit u?", "acceptedAnswer": { "@type": "Answer", "text": "In Deventer, aan de P.C. Hooftlaan 58." } },
+    { "@type": "Question", "name": "Kan ik ook een bericht sturen?", "acceptedAnswer": { "@type": "Answer", "text": "Zeker. Via WhatsApp of per e-mail." } }
+  ]
+}
+</script>
+<meta name="color-scheme" content="light">
+<link rel="icon" type="image/png" sizes="192x192" href="images/logo-192.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@85,800&family=Public+Sans:wght@400;600&display=swap">
@@ -42,6 +61,9 @@
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     // Scroll animations only enhance: without this class everything is simply visible
     root.classList.add('motion');
+    // html.ready starts the entrance of the logo and hero note (set after the intro, or right away without one).
+    // Safety net: whatever happens, they are never left hidden.
+    setTimeout(function () { root.classList.add('ready'); }, 2600);
 
     // Scroll-driven intro until it has been painted once this visit; never when storage is blocked
     try {
@@ -80,7 +102,7 @@
     --measure: 60ch;
     --text-lead: clamp(1.125rem, 1.6vw, 1.375rem);
     --btn-h: 3.5rem;
-    --nav-h: 3.75rem;
+    --nav-h: 4.25rem;
     --ease: cubic-bezier(.2, .6, .2, 1);
     --ease-out: cubic-bezier(.16, 1, .3, 1);   /* long, calm settle for scroll reveals */
 
@@ -101,7 +123,7 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection { background: var(--tape); color: #fff; }
-  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 
   /* keyboard users can jump straight past the hero */
   .skip {
@@ -134,7 +156,7 @@
   }
   /* hover: a darker coat is rolled across the button from the left */
   .btn::before {
-    content: ""; position: absolute; inset: 0; z-index: -1;
+    content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: -1;
     background: var(--tape-dark);
     transform: scaleX(0); transform-origin: right center;
     transition: transform .45s var(--ease-out);
@@ -146,7 +168,7 @@
   /* ---------- Nav ---------- */
   /* always visible; the border only appears once the page has scrolled */
   .nav {
-    position: fixed; inset: 0 0 auto; z-index: 10;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
     height: var(--nav-h);
     background: var(--plaster) var(--grain);
     border-bottom: 1px solid transparent;
@@ -160,9 +182,13 @@
   }
   .logo-name { font: 800 1.375rem/1 var(--font-head); font-stretch: 85%; letter-spacing: -.01em; }
   .logo-sub { color: var(--muted); font-size: .8125rem; font-weight: 600; padding-left: .6rem; border-left: 1px solid var(--line); }
-  @media (max-width: 479px) { .logo-sub { display: none; } }
-  /* the brand mark: a scrap of painter's tape (same as the favicon) */
-  .logo-mark { width: 1.15rem; height: .6rem; background: var(--tape); clip-path: var(--torn); transform: rotate(-8deg); }
+  /* only on very narrow phones; above that the nav has room since its button is hidden on phones */
+  @media (max-width: 340px) { .logo-sub { display: none; } }
+  /* Edward's logo (images/logo.png: transparent cut-out of the supplied artwork) */
+  .logo-img { display: block; width: 2.875rem; height: 2.875rem; flex: none; }
+  /* the logo turns into place once the page is ready (after the intro) */
+  .motion .logo-img { transition: transform 1.1s var(--ease-out), opacity .5s ease; }
+  .motion:not(.ready) .logo-img { transform: rotate(-120deg) scale(.6); opacity: 0; }
 
   .nav-links { display: none; }
   @media (min-width: 1180px) {
@@ -183,9 +209,8 @@
 
   .nav .btn { min-height: 2.5rem; padding: .55rem 1rem; font-size: 1rem; }
   .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
-  .nav-phone { color: var(--ink); font-weight: 600; text-decoration: none; }
-  .nav-phone:hover { color: var(--tape-dark); }
-  @media (max-width: 767px) { .nav-phone { display: none; } }
+  /* phones: the hero has its own button and the call bar takes over after it, so the nav doesn't repeat it */
+  @media (max-width: 640px) { .nav .btn { display: none; } }
   /* reading progress: a thin strip of tape along the bottom of the nav */
   .progress { display: none; }
   .motion .progress {
@@ -216,7 +241,7 @@
   section { padding: var(--section) 0; }
   .lead { max-width: var(--measure); font-size: var(--text-lead); }
   /* rotated tape band would otherwise cause sideways scrolling */
-  main { overflow-x: clip; }
+  main { overflow-x: hidden; overflow-x: clip; }   /* hidden for older browsers; clip keeps sticky headings working */
 
   /* editorial two-column layout on wide screens: heading on the left (sticky), content on the right */
   @media (min-width: 1000px) {
@@ -226,14 +251,18 @@
     .layout .main, .layout .main > :first-child { margin-top: 0; }
     .layout .side .lead { margin-bottom: 0; }
   }
-  .side .cta { margin-top: 2rem; }
+  .side-link { margin-top: 1.25rem; font-weight: 600; }
 
   /* ---------- Hero ---------- */
   .hero {
-    overflow: clip;   /* the parallax drift never runs into the band below */
-    min-height: min(100svh, 60rem); display: flex; flex-direction: column; justify-content: center;
+    overflow: hidden; overflow: clip;   /* the parallax drift never runs into the band below */
+    min-height: 100vh; min-height: min(100vh, 60rem); min-height: min(100svh, 60rem); display: flex; flex-direction: column; justify-content: center;
     padding-top: calc(var(--nav-h) + clamp(4rem, 14vw, 10rem));
     padding-bottom: clamp(3rem, 8vw, 6rem);
+  }
+  /* phones: no full-screen hero; the content is short, so the empty space would just push the services away */
+  @media (max-width: 640px) {
+    .hero { min-height: 0; padding-top: calc(var(--nav-h) + 4.5rem); padding-bottom: 4rem; }
   }
   .hero h1 {
     font-size: clamp(2.6rem, 8vw, 6rem);
@@ -262,7 +291,10 @@
     }
     .memo::before { left: -1.2rem; transform: rotate(-32deg); }
     .memo::after { right: -1.2rem; transform: rotate(28deg); }
-    .memo-h { font: 800 1.375rem/1.1 var(--font-head); font-stretch: 85%; margin-bottom: 1rem; }
+    .memo-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.1rem; }
+    .memo-head img { width: 4.5rem; height: 4.5rem; flex: none; }
+    .memo-h { font: 800 1.375rem/1.1 var(--font-head); font-stretch: 85%; }
+    .memo-by { margin-top: .2rem; color: var(--muted); font-size: .875rem; }
     .memo li { position: relative; padding: .45rem 0 .45rem 1.6rem; border-top: 1px solid var(--line-soft); }
     /* a pencil tick */
     .memo li::before {
@@ -271,6 +303,16 @@
       border: solid var(--tape-dark); border-width: 0 2px 2px 0;
       transform: rotate(40deg);
     }
+    /* entrance: once the intro is done (html.ready) the note drops onto the wall, then the tape is pressed on;
+       afterwards it tilts a little with the mouse (--rx/--ry set by JS) */
+    .motion .memo {
+      transform: perspective(900px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) rotate(1.2deg);
+      transition: opacity .6s ease, transform .9s var(--ease-out);
+    }
+    .motion:not(.ready) .memo { opacity: 0; transform: translateY(-2.5rem) rotate(7deg); }
+    .motion .memo::before, .motion .memo::after { transition: transform .45s var(--ease-out) .7s; }
+    .motion:not(.ready) .memo::before { transform: rotate(-32deg) scaleX(0); }
+    .motion:not(.ready) .memo::after { transform: rotate(28deg) scaleX(0); }
     .memo-foot { margin-top: 1rem; padding-top: .9rem; border-top: 1px solid var(--line); color: var(--muted); }
     .memo-foot a { font-weight: 600; }
   }
@@ -289,14 +331,14 @@
     font: 800 clamp(1.5rem, 3vw, 2.25rem)/1 var(--font-head); font-stretch: 85%; letter-spacing: -.005em;
   }
   .band-track span::after { content: ""; width: .5em; height: .5em; border: 2px solid currentColor; border-radius: 50%; opacity: .7; }
-  .motion .band-track { animation: band 45s linear infinite; }
-  @keyframes band { to { transform: translateX(-50%); } }
+  /* moved by the scroll script: drifts on its own, speeds up while you scroll and follows the scroll direction */
+  .motion .band-track { will-change: transform; }
 
   /* ---------- Intro: a brush stroke paints the page open (~1s, scrolling speeds it up) ---------- */
   /* Shown only once the intro script has set it up (html.intro-on), so a broken script never hides the page.
      It sits under the nav, so "Bel Edward" in the nav stays visible and clickable throughout. */
   .intro { display: none; }
-  html.intro-on .intro { display: block; position: fixed; inset: 0; z-index: 9; }
+  html.intro-on .intro { display: block; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9; }
   .intro svg { display: block; width: 100%; height: 100%; }
   .intro .cover { fill: var(--plaster); }
   .intro .paint { stroke: var(--tape); }
@@ -314,8 +356,6 @@
   }
   .list .note { color: var(--muted); }
   .list .note::before { content: "— "; }
-  .cta { margin-top: 2.75rem; display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; }
-  .cta p { color: var(--muted); }
 
   /* sections that follow another plaster section share its bottom padding */
   .follows { padding-top: 0; }
@@ -421,6 +461,18 @@
   }
   @media (hover: hover) { .phone:hover::before { transform: rotate(-1deg) scaleX(1); } }
   .contact .actions { margin-top: 1.75rem; }
+  .phone-row { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.75rem; margin-top: 2rem; }
+  .phone-row .phone { margin-top: 0; }
+  .copy {
+    padding: .7rem 1rem; cursor: pointer;
+    font: 600 .9375rem/1 var(--font-body); color: var(--tape-dark);
+    background: transparent; border: 1px solid var(--line); border-radius: 3px;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .copy:hover { border-color: var(--tape-dark); }
+  .copy.is-done { color: var(--ink); border-color: var(--ink); }
+  .vcard { margin-top: .4rem; }
+  .vcard a { font-weight: 600; }
   /* details on the left, map on the right (stacked on small screens) */
   .contact-grid { display: grid; gap: 2rem 4rem; margin-top: clamp(3rem, 6vw, 4.5rem); padding-top: 2.5rem; border-top: 1px solid var(--line); }
   @media (min-width: 900px) { .contact-grid { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); } }
@@ -437,7 +489,9 @@
   footer { padding: clamp(3rem, 7vw, 5rem) 0 calc(2rem + env(safe-area-inset-bottom)); color: var(--muted); font-size: .9375rem; }
   .foot { display: grid; gap: 2.25rem 2rem; }
   @media (min-width: 768px) { .foot { grid-template-columns: 1.5fr 1fr 1fr; } }
-  .foot .logo { margin-bottom: .75rem; }
+  /* plaster disc behind the logo, so the big wordmark doesn't show through its open middle */
+  .foot-logo { display: inline-block; margin-bottom: 1rem; border-radius: 50%; background: var(--plaster) var(--grain); }
+  .foot-logo img { display: block; width: 6rem; height: 6rem; }
   .foot-h { margin-bottom: .6rem; color: var(--ink); font: 800 1.125rem/1.2 var(--font-head); font-stretch: 85%; }
   .foot li { padding: .15rem 0; }
   .foot address { font-style: normal; }
@@ -446,6 +500,13 @@
     margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line-soft);
   }
   .legal a { color: var(--muted); }
+  .legal-links { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+  .linkbtn {
+    padding: 0; border: 0; background: none; cursor: pointer;
+    font: inherit; color: var(--muted);
+    text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px;
+  }
+  .linkbtn:hover { text-decoration-thickness: 2px; }
   /* the name, very large and quiet, like fresh paint on the plaster */
   /* it sits behind the footer text, centred and cropped at the bottom edge */
   footer { overflow: hidden; position: relative; isolation: isolate; }
@@ -454,7 +515,7 @@
     transform: translateX(-50%);
     margin: 0; color: var(--wall); pointer-events: none;
     font: 800 clamp(5rem, 25vw, 23rem)/.8 var(--font-head); font-stretch: 85%; letter-spacing: -.035em;
-    white-space: nowrap; user-select: none;
+    white-space: nowrap; -webkit-user-select: none; user-select: none;
   }
   /* phones: the footer keeps room for the call bar at the bottom, so lift the name up behind the text */
   @media (max-width: 640px) {
@@ -468,7 +529,7 @@
     .wa { display: inline; }
     .callbar {
       display: flex; gap: .75rem; align-items: center;
-      position: fixed; inset: auto 0 0; z-index: 9;
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 9;
       padding: .75rem var(--gutter) calc(.75rem + env(safe-area-inset-bottom));
       background: var(--plaster) var(--grain);
       border-top: 1px solid var(--line-soft);
@@ -490,7 +551,7 @@
   .work-photo img { display: block; width: 100%; height: 120%; margin-top: -10%; object-fit: cover; }
   @media (max-width: 640px) {
     .work-photo { aspect-ratio: 4 / 3; }
-    .work-photo + .work-photo { margin-top: 30svh; }   /* one photo per screen */
+    .work-photo + .work-photo { margin-top: 30vh; margin-top: 30svh; }   /* one photo per screen */
   }
 
   /* ---------- Smooth scrolling (Lenis' required CSS) ---------- */
@@ -559,7 +620,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .intro { display: none !important; }
-    .nav, .callbar, .btn, .btn::before, .phone::before, .faq summary::after, .nav-links a::after { transition: none; }
+    .nav, .callbar, .btn, .btn::before, .phone::before, .faq summary::after, .nav-links a::after, .copy { transition: none; }
   }
 </style>
 </head>
@@ -617,6 +678,10 @@
     f.setAttribute('x', -reach); f.setAttribute('width', reach * 2);
     f.setAttribute('y', -reach); f.setAttribute('height', reach * 2);
   });
+  // Phones redraw this full-screen filter on every frame; one octave of noise is much cheaper and looks the same at that size
+  if (w < 700 || matchMedia('(pointer: coarse)').matches) {
+    intro.querySelectorAll('feTurbulence').forEach(function (t) { t.setAttribute('numOctaves', '1'); });
+  }
   var hole = intro.querySelector('.hole'), paint = intro.querySelector('.paint');
   hole.setAttribute('d', d); paint.setAttribute('d', d);
   var holeWidth = width * .62;
@@ -642,12 +707,17 @@
     paint.style.strokeWidth = width + (full * 1.1 - width) * g + 'px';
   }
 
-  var p = 0, rate = 1, last = null, done = false;
+  // On a slow phone a single frame can take a few hundred ms. Counting real time would then use up the
+  // whole second in 3–4 frames and the stroke would never be seen, so one frame advances at most ~1/30 s.
+  // Time only starts once the cover has actually been painted, and MAX_WALL is a hard stop so the page is never held up.
+  var MAX_STEP = 1000 / 24, MAX_WALL = 2500;
+  var p = 0, rate = 1, last = null, started = null, done = false;
   function frame(now) {
     if (done) return;
-    if (last !== null) p += (now - last) / DURATION * rate;
+    if (started === null) started = now;
+    if (last !== null) p += Math.min(now - last, MAX_STEP) / DURATION * rate;
     last = now;
-    if (p >= 1) return finish();
+    if (p >= 1 || now - started > MAX_WALL) return finish();
     render(p);
     requestAnimationFrame(frame);
   }
@@ -658,6 +728,7 @@
     if (done) return; done = true;
     intro.remove();
     root.classList.remove('intro-on', 'has-intro');
+    root.classList.add('ready');
     try { sessionStorage.setItem('delina-intro', '1'); } catch (e) {}
     scrollInput.forEach(function (t) { removeEventListener(t, hurry); });
     removeEventListener('keydown', onKey);
@@ -677,7 +748,8 @@
     addEventListener('keydown', onKey);
     addEventListener('focusin', onFocus);
     scrollInput.forEach(function (t) { addEventListener(t, hurry, { passive: true }); });
-    requestAnimationFrame(frame);
+    // first frame paints the cover, the clock starts on the next one
+    requestAnimationFrame(function () { requestAnimationFrame(frame); });
   } catch (e) { finish(); }
 })();
 </script>
@@ -686,16 +758,16 @@
 
 <header class="nav" id="nav">
   <div class="wrap">
-    <a class="logo" href="#top" aria-label="Klussenbedrijf De-Lina, naar boven"><span class="logo-mark" aria-hidden="true"></span><span class="logo-name">De-Lina</span><span class="logo-sub">Klussenbedrijf</span></a>
+    <a class="logo" href="#top" aria-label="Klussenbedrijf De-Lina, naar boven"><img class="logo-img" src="images/logo.png" width="522" height="522" alt=""><span class="logo-name">De-Lina</span><span class="logo-sub">Klussenbedrijf</span></a>
     <nav class="nav-links" aria-label="Hoofdmenu">
       <a href="#diensten">Diensten</a>
       <a href="#werkwijze">Werkwijze</a>
       <a href="#prijs">Prijs</a>
       <a href="#vragen">Vragen</a>
       <a href="#contact">Contact</a>
+      <a href="#locatie">Locatie</a>
     </nav>
     <div class="nav-actions">
-      <a class="nav-phone" href="tel:+31642920203">06 42 92 02 03</a>
       <a class="btn" href="tel:+31642920203">Bel Edward</a>
     </div>
   </div>
@@ -711,18 +783,24 @@
         <p class="sub">Binnen en buiten. Geen reiskosten, geen reisuren.</p>
         <div class="actions">
           <a class="btn" href="tel:+31642920203">Bel Edward</a>
-          <span class="alt">of <a href="mailto:hayk23@hotmail.nl">mail</a><span class="wa"> of <a href="https://wa.me/31642920203">app</a></span></span>
+          <span class="alt">of <a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">mail</a><span class="wa"> of <a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">app</a></span></span>
         </div>
       </div>
       <aside class="memo" aria-label="In het kort">
-        <p class="memo-h">Klussenbedrijf De-Lina</p>
+        <div class="memo-head">
+          <img src="images/logo.png" width="522" height="522" alt="Logo van Klussenbedrijf De-Lina" loading="lazy" decoding="async">
+          <div>
+            <p class="memo-h">Klussenbedrijf De-Lina</p>
+            <p class="memo-by">Schilder en klusser</p>
+          </div>
+        </div>
         <ul>
           <li>Schilderwerk, binnen en buiten</li>
           <li>Sauzen, stucwerk en vloeren</li>
           <li>Geen reiskosten of reisuren</li>
           <li>Eén vaste vakman: Edward</li>
         </ul>
-        <p class="memo-foot">Deventer · <a href="tel:+31642920203">06 42 92 02 03</a></p>
+        <p class="memo-foot">Gevestigd in Deventer</p>
       </aside>
     </div>
   </section>
@@ -749,10 +827,6 @@
         <li class="reveal"><span class="name">Tapijt</span><span class="note">ook op trappen</span></li>
         <li class="reveal"><span class="name">Laminaat</span></li>
       </ul>
-      <div class="cta">
-        <a class="btn" href="tel:+31642920203">Bel Edward</a>
-        <p>Vertel wat er moet gebeuren.</p>
-      </div>
       </div>
     </div>
   </section>
@@ -809,15 +883,16 @@
     <div class="wrap layout">
       <div class="side">
         <h2 id="faq-title" data-split><span class="taped">Goed om te weten</span></h2>
-        <p class="lead reveal">Staat uw vraag er niet bij? Bel gerust, dan hoort u het meteen.</p>
-        <div class="cta"><a class="btn" href="tel:+31642920203">Bel Edward</a></div>
+        <p class="lead reveal">Staat uw vraag er niet bij? Vraag het mij gerust, dan hoort u het meteen.</p>
+        <p class="side-link reveal"><a href="#contact">Neem contact op</a></p>
       </div>
       <div class="faq-list main">
         <details class="reveal"><summary>Wat kost een klus?</summary><p>Dat hangt af van het werk. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p></details>
         <details class="reveal"><summary>Werkt u ook buiten?</summary><p>Ja. Schilderwerk doe ik binnen en buiten.</p></details>
         <details class="reveal"><summary>Legt u ook tapijt op de trap?</summary><p>Ja, ik leg tapijt ook op trappen.</p></details>
         <details class="reveal"><summary>Met wie heb ik te maken?</summary><p>Met mij, Edward. Ik werk alleen en doe het werk zelf.</p></details>
-        <details class="reveal"><summary>Kan ik ook een bericht sturen?</summary><p>Zeker. Via <a href="https://wa.me/31642920203">WhatsApp</a> of per <a href="mailto:hayk23@hotmail.nl">e-mail</a>.</p></details>
+        <details class="reveal"><summary>Waar zit u?</summary><p>In Deventer, aan de P.C. Hooftlaan 58. <a href="#locatie">Bekijk de kaart</a></p></details>
+        <details class="reveal"><summary>Kan ik ook een bericht sturen?</summary><p>Zeker. Via <a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">WhatsApp</a> of per <a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">e-mail</a>.</p></details>
       </div>
     </div>
   </section>
@@ -826,12 +901,16 @@
     <div class="wrap">
       <h2 id="contact-title" data-split><span class="taped">Even kennismaken?</span></h2>
       <p class="lead reveal">Bel of app gerust. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p>
-      <a class="phone" href="tel:+31642920203" aria-label="Bel Edward: 06 42 92 02 03">06 42 92 02 03</a>
+      <div class="phone-row">
+        <a class="phone" href="tel:+31642920203" aria-label="Bel Edward: 06 42 92 02 03">06 42 92 02 03</a>
+        <!-- computers can't tap to call: offer to copy the number (shown by JS on mouse devices only) -->
+        <button class="copy" type="button" data-copy="06 42 92 02 03" hidden>Kopieer nummer</button>
+      </div>
       <div class="actions">
         <a class="btn" href="tel:+31642920203">Bel Edward</a>
-        <span class="alt">of <a href="mailto:hayk23@hotmail.nl">hayk23@hotmail.nl</a></span>
+        <span class="alt">of <a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">hayk23@hotmail.nl</a></span>
       </div>
-      <div class="contact-grid">
+      <div class="contact-grid" id="locatie">
         <dl class="facts">
           <div>
             <dt>Adres</dt>
@@ -840,7 +919,8 @@
           </div>
           <div>
             <dt>Bereikbaar via</dt>
-            <dd>Telefoon, <a href="https://wa.me/31642920203">WhatsApp</a> of <a href="mailto:hayk23@hotmail.nl">e-mail</a></dd>
+            <dd>Telefoon, <a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">WhatsApp</a> of <a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">e-mail</a></dd>
+            <dd class="vcard"><a href="edward-de-lina.vcf" download>Zet Edward in uw contacten</a></dd>
           </div>
           <div>
             <dt>Werkgebied</dt>
@@ -860,15 +940,15 @@
   <div class="wrap">
     <div class="foot">
       <div>
-        <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true"></span><span class="logo-name">De-Lina</span></a>
+        <a class="foot-logo" href="#top"><img src="images/logo.png" width="522" height="522" alt="Klussenbedrijf De-Lina, naar boven" loading="lazy" decoding="async"></a>
         <p>Kwaliteit voor een betaalbare prijs.<br>Schilderwerk, stucwerk en vloeren door Edward.</p>
       </div>
       <div>
         <p class="foot-h">Contact</p>
         <ul>
           <li><a href="tel:+31642920203">06 42 92 02 03</a></li>
-          <li><a href="mailto:hayk23@hotmail.nl">hayk23@hotmail.nl</a></li>
-          <li><a href="https://wa.me/31642920203">WhatsApp</a></li>
+          <li><a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">hayk23@hotmail.nl</a></li>
+          <li><a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">WhatsApp</a></li>
           <li><address>P.C. Hooftlaan 58<br>7412 PT Deventer</address></li>
         </ul>
       </div>
@@ -885,7 +965,11 @@
     </div>
     <div class="legal">
       <p>© <span id="year">2026</span> Klussenbedrijf De-Lina · Edward · KvK <span class="todo">TODO</span></p>
-      <a href="#top">Naar boven</a>
+      <p class="legal-links">
+        <!-- word of mouth: share the site (Web Share on phones, otherwise copy the link); shown by JS -->
+        <button class="linkbtn" type="button" id="share" hidden>Deel deze site</button>
+        <a href="#top">Naar boven</a>
+      </p>
     </div>
     <p class="wordmark" aria-hidden="true">De-Lina</p>
   </div>
@@ -893,7 +977,7 @@
 
 <div class="callbar" id="callbar">
   <a class="btn" href="tel:+31642920203">Bel Edward</a>
-  <a href="https://wa.me/31642920203">WhatsApp</a>
+  <a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">WhatsApp</a>
 </div>
 
 <script>
@@ -908,6 +992,53 @@
   function navState() { nav.classList.toggle('is-scrolled', window.scrollY > 8); }
   window.addEventListener('scroll', navState, { passive: true });
   navState();
+
+  // No intro this visit: logo and hero note make their entrance right away
+  if (!document.documentElement.classList.contains('has-intro')) {
+    setTimeout(function () { document.documentElement.classList.add('ready'); }, 120);
+  }
+
+  // Copy to clipboard (with a fallback for browsers without the Clipboard API)
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  // Briefly swap a button's label to confirm what happened, then put it back
+  function confirmOn(btn, label) {
+    var original = btn.dataset.label || (btn.dataset.label = btn.textContent);
+    btn.textContent = label; btn.classList.add('is-done');
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function () { btn.textContent = original; btn.classList.remove('is-done'); }, 2200);
+  }
+
+  // "Kopieer nummer": only on mouse devices, where tapping the number to call doesn't work
+  var copyBtn = document.querySelector('.copy');
+  if (copyBtn && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    copyBtn.hidden = false;
+    copyBtn.setAttribute('aria-live', 'polite');
+    copyBtn.addEventListener('click', function () {
+      copyText(copyBtn.dataset.copy).then(function () { confirmOn(copyBtn, 'Gekopieerd'); }, function () {});
+    });
+  }
+
+  // "Deel deze site": the phone's own share sheet, or copy the link
+  var shareBtn = document.getElementById('share');
+  if (shareBtn) {
+    shareBtn.hidden = false;
+    shareBtn.setAttribute('aria-live', 'polite');
+    shareBtn.addEventListener('click', function () {
+      var data = { title: 'Klussenbedrijf De-Lina', text: 'Schilderwerk, stucwerk en vloeren door Edward.', url: location.href.split('#')[0] };
+      if (navigator.share) navigator.share(data).catch(function () {});
+      else copyText(data.url).then(function () { confirmOn(shareBtn, 'Link gekopieerd'); }, function () {});
+    });
+  }
 
   var motion = document.documentElement.classList.contains('motion');
   var animated = document.querySelectorAll('.reveal');
@@ -926,14 +1057,14 @@
   // Menu: underline the section that is in the middle of the screen
   var links = {};
   nav.querySelectorAll('.nav-links a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  // #locatie sits inside #contact, so keep track of everything in the middle band and underline
+  // the last one in page order (the most specific)
+  var inView = {}, order = Object.keys(links);
   var spy = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      var a = links[e.target.id];
-      if (!a) return;
-      if (e.isIntersecting) {
-        Object.keys(links).forEach(function (id) { links[id].classList.toggle('is-active', links[id] === a); });
-      } else a.classList.remove('is-active');
-    });
+    entries.forEach(function (e) { inView[e.target.id] = e.isIntersecting; });
+    var current = null;
+    order.forEach(function (id) { if (inView[id]) current = id; });
+    order.forEach(function (id) { links[id].classList.toggle('is-active', id === current); });
   }, { rootMargin: '-45% 0px -50% 0px' });
   Object.keys(links).forEach(function (id) { var s = document.getElementById(id); if (s) spy.observe(s); });
 
@@ -1003,6 +1134,47 @@
   var photos = document.querySelectorAll('[data-parallax]');
   var progress = document.getElementById('progress');
   var steps = document.querySelector('.steps');
+  var footer = document.querySelector('footer'), wordmark = document.querySelector('.wordmark');
+
+  // Tape band: drifts by itself; scrolling adds speed and sets the direction. Only runs while it's on screen.
+  var band = document.querySelector('.band'), track = band && band.querySelector('.band-track');
+  if (track) {
+    var half = 0, bx = 0, boost = 0, dir = 1, lastSY = scrollY, lastT = null, bandOn = false, raf = null;
+    var measure = function () { half = track.scrollWidth / 2; };
+    measure();
+    if (document.fonts) document.fonts.ready.then(measure);
+    addEventListener('resize', measure);
+    var bandFrame = function (t) {
+      raf = null;
+      if (!bandOn) { lastT = null; return; }
+      var dt = lastT === null ? 16 : Math.min(t - lastT, 50); lastT = t;
+      var sy = scrollY, dy = sy - lastSY; lastSY = sy;
+      if (dy) dir = dy > 0 ? 1 : -1;
+      boost += (Math.min(Math.abs(dy), 80) * .35 - boost) * .08;        // eases in and out, never jumps
+      bx -= (.035 * dt + boost) * dir;                                  // ~35px/s by itself
+      if (half) { bx %= half; if (bx > 0) bx -= half; }
+      track.style.transform = 'translate3d(' + bx.toFixed(1) + 'px,0,0)';
+      raf = requestAnimationFrame(bandFrame);
+    };
+    new IntersectionObserver(function (e) {
+      bandOn = e[0].isIntersecting;
+      if (bandOn && !raf) raf = requestAnimationFrame(bandFrame);
+    }).observe(band);
+  }
+
+  // Hero note follows the mouse with a slight tilt (mouse devices, wide screens)
+  var memo = document.querySelector('.memo');
+  if (memo && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    hero.addEventListener('mousemove', function (e) {
+      if (innerWidth < 1000) return;
+      var r = hero.getBoundingClientRect();
+      memo.style.setProperty('--rx', ((e.clientX - r.left) / r.width - .5) * 8 + 'deg');
+      memo.style.setProperty('--ry', -((e.clientY - r.top) / r.height - .5) * 8 + 'deg');
+    });
+    hero.addEventListener('mouseleave', function () {
+      memo.style.setProperty('--rx', '0deg'); memo.style.setProperty('--ry', '0deg');
+    });
+  }
 
   // Statement: split into words, which light up one after another as it scrolls through the screen
   var quote = document.getElementById('quote'), words = [];
@@ -1026,6 +1198,13 @@
     var y = scrollY, vh = innerHeight, hh = hero.offsetHeight;
     var max = document.documentElement.scrollHeight - vh;
     progress.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0).toFixed(4) + ')';
+
+    // footer: the big name rises into place as the footer scrolls in
+    var fr = footer.getBoundingClientRect();
+    if (fr.top < vh) {
+      var fp = clamp01((vh - fr.top) / fr.height);
+      wordmark.style.transform = 'translate(-50%,' + ((1 - fp) * 45).toFixed(1) + '%)';
+    }
 
     // steps: the tape fills from when they enter the lower part of the screen until they reach the middle
     var sr = steps.getBoundingClientRect();

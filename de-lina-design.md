@@ -25,7 +25,7 @@ Build it as a single `index.html` (CSS and JS inline). All site copy is Dutch.
 
 A homeowner or small business owner needs a painter or handyman and wants to know in 10 seconds: what does he do, can I trust him, how do I reach him. The site exists to make them **call Edward**. Nothing else.
 
-- **One action, repeated:** "Bel Edward" (`tel:+31642920203`). In the nav, in the hero, after the services, and at the end. Secondary: e-mail link. On mobile, a WhatsApp link (`https://wa.me/31642920203`) next to the call button is allowed.
+- **One action, not overdone:** "Bel Edward" (`tel:+31642920203`). In the nav (not on phones, where the call bar does the job), in the hero, and at the end (contact). Oct 2026: the client found it repeated too often, so there are no extra buttons between sections, and the phone number as text appears only in the contact section and the footer. Secondary: e-mail link. On mobile, a WhatsApp link (`https://wa.me/31642920203`) next to the call button is allowed.
 - No forms, no quote calculator, no newsletter, no pop-ups.
 
 ## 3. Text: reading is opt-in
@@ -78,6 +78,8 @@ A homeowner or small business owner needs a painter or handyman and wants to kno
 - **Layout:** services, price and FAQ get a two-column layout on wide screens (heading sticky on the left). Contact gets address / reachability / work area next to the map.
 - **Statement band:** after "Zo werk ik", a dark (`--ink`) band with Edward's own slogan as a big quote ("Kwaliteit voor een betaalbare prijs. Met goed materiaal, zodat u er jaren plezier van hebt."); the words light up one by one while scrolling.
 - **Texture:** a very fine plaster grain on the `--plaster` ground; the `--wall` contact band stays smooth like fresh paint. The footer ends with a huge, quiet "De-Lina" wordmark in `--wall`.
+- **Small, useful helpers:** WhatsApp and e-mail links open with a short message already filled in; "Zet Edward in uw contacten" saves a contact card; on computers a "Kopieer nummer" button next to the big number; "Deel deze site" in the footer (word of mouth matters for a one-man business).
+- **Motion, still calm:** the tape band reacts to scrolling (speed and direction); the hero note is taped onto the wall after the intro and tilts slightly with the mouse; the nav logo turns into place; the footer wordmark rises as you reach the end. The hero headline, sub line and "Bel Edward" stay static.
 - **Footer:** three columns: name + tagline ("Kwaliteit voor een betaalbare prijs"), contact (phone, e-mail, WhatsApp, address), services.
 
 ### Copy (use this, adjust lightly if it doesn't fit)
@@ -98,6 +100,11 @@ A homeowner or small business owner needs a painter or handyman and wants to kno
 - Until they exist: **leave the Work section out entirely.** Do not use stock photos. Do not use the cartoon painter from the flyer.
 - When photos arrive: put them in `/images`, show them full-width, one per screen on mobile, cropped landscape with consistent tone. Before/after pairs are welcome.
 - Without photos the page must still never feel empty: the typography and the painter's-tape element (section 7) carry it.
+
+### Logo (added Oct 2026)
+
+- Edward supplied an official logo: a navy line drawing of a painter with brush and palette in a circle, "DE-LINA" underneath. This is his own brand mark, so it is allowed (the "no cartoon painter" rule is about using illustrations as decoration, not about his logo).
+- Used sparingly: in the nav next to the name, at the top of the hero note, in the footer, and as the favicon. Not as a big hero image, not repeated per section, never on the dark band.
 
 ## 6. Look
 
@@ -148,7 +155,7 @@ Spend all boldness here; keep everything else quiet.
 
 ## 8. Navigation
 
-- Slim top bar: tape-scrap mark + "De-Lina" + "Klussenbedrijf" on the left, "Bel Edward" button on the right; the phone number as text from tablet width; an anchor menu (Diensten, Werkwijze, Prijs, Vragen, Contact) on wide screens, with the current section underlined in tape.
+- Slim top bar: tape-scrap mark + "De-Lina" + "Klussenbedrijf" on the left, "Bel Edward" button on the right (hidden on phones); an anchor menu (Diensten, Werkwijze, Prijs, Vragen, Contact) on wide screens, with the current section underlined in tape.
 - Always visible (changed Oct 2026 at the client's request; it used to hide on scroll down).
 - On mobile: also a fixed "Bel Edward" button at the bottom of the screen once the hero is scrolled past (respect `env(safe-area-inset-bottom)`).
 
