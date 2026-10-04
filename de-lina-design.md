@@ -39,7 +39,7 @@ A homeowner or small business owner needs a painter or handyman and wants to kno
 
 ```
 ┌──────────────────────────────────────────┐
-│ De-Lina                      Bel Edward  │  slim bar, hides on scroll down
+│ De-Lina                      Bel Edward  │  slim bar, always visible
 ├──────────────────────────────────────────┤
 │                                          │
 │  Schilderwerk, stucwerk                  │  HERO
@@ -74,12 +74,12 @@ A homeowner or small business owner needs a painter or handyman and wants to kno
 - **Eerlijke prijs** gets four short points under the lead: Geen reiskosten, Vooraf duidelijk, Goed materiaal, Eén vakman.
 - **Goed om te weten:** a short FAQ in collapsed `<details>` (reading stays opt-in). Never answer with facts we don't have (hours, area, guarantees).
 - **Hero note (wide screens):** a paper note "taped to the wall" next to the sub line, with four ticks (services, no travel costs, one tradesman) and the phone number.
-- **Tape band:** one long strip of tape across the page between hero and services with the services written on it; slow marquee (static with reduced motion).
+- **Tape band:** one long strip of tape across the page between hero and services with the services written on it. Static (the marquee was removed Oct 2026).
 - **Layout:** services, price and FAQ get a two-column layout on wide screens (heading sticky on the left). Contact gets address / reachability / work area next to the map.
-- **Statement band:** after "Zo werk ik", a dark (`--ink`) band with Edward's own slogan as a big quote ("Kwaliteit voor een betaalbare prijs. Met goed materiaal, zodat u er jaren plezier van hebt."); the words light up one by one while scrolling.
+- **Statement band:** after "Zo werk ik", a dark (`--ink`) band with Edward's own slogan as a big quote ("Kwaliteit voor een betaalbare prijs. Met goed materiaal, zodat u er jaren plezier van hebt."); static, no word-by-word effect.
 - **Texture:** a very fine plaster grain on the `--plaster` ground; the `--wall` contact band stays smooth like fresh paint. The footer ends with a huge, quiet "De-Lina" wordmark in `--wall`.
 - **Small, useful helpers:** WhatsApp and e-mail links open with a short message already filled in; "Zet Edward in uw contacten" saves a contact card; on computers a "Kopieer nummer" button next to the big number; "Deel deze site" in the footer (word of mouth matters for a one-man business).
-- **Motion, still calm:** the tape band reacts to scrolling (speed and direction); the hero note is taped onto the wall after the intro and tilts slightly with the mouse; the nav logo turns into place; the footer wordmark rises as you reach the end. The hero headline, sub line and "Bel Edward" stay static.
+- **Motion (reduced Oct 2026, client wanted less):** only the brush-stroke intro and the tape under each h2, which is drawn in once when the heading scrolls into view. Everything else is static: no scroll reveals, parallax, smooth scroll, marquee, reading bar, logo spin, note tilt, wordmark rise or button paint effect. Hover states (nav underline, service tape, phone tape) stay.
 - **Footer:** three columns: name + tagline ("Kwaliteit voor een betaalbare prijs"), contact (phone, e-mail, WhatsApp, address), services.
 
 ### Copy (use this, adjust lightly if it doesn't fit)
@@ -104,7 +104,7 @@ A homeowner or small business owner needs a painter or handyman and wants to kno
 ### Logo (added Oct 2026)
 
 - Edward supplied an official logo: a navy line drawing of a painter with brush and palette in a circle, "DE-LINA" underneath. This is his own brand mark, so it is allowed (the "no cartoon painter" rule is about using illustrations as decoration, not about his logo).
-- Used sparingly: in the nav next to the name, at the top of the hero note, in the footer, and as the favicon. Not as a big hero image, not repeated per section, never on the dark band.
+- Used sparingly: in the nav next to the name, at the top of the hero note, in the footer, in the Open Graph image and as the favicon. Not as a big hero image, not repeated per section, never on the dark band.
 
 ## 6. Look
 
@@ -142,20 +142,14 @@ Spend all boldness here; keep everything else quiet.
   - Once per visit: `sessionStorage` key `delina-intro` is set when the intro finishes.
   - All content is in the HTML underneath from the start. The cover only appears once the intro script has set itself up (`html.intro-on`), so a script error never hides the page.
   - No other animation in the hero while the intro runs.
-- **Scrolling (calm, Feadship-like, never flashy):**
-  - Desktop (mouse/trackpad): Lenis 1.3.26 inertia scrolling, loaded from jsDelivr with an integrity hash. Touch devices keep native scrolling.
-  - Section headings reveal line by line (each line slides up from behind a mask and fades in); the heading tape then draws in from the left.
-  - Short text and the service rows fade in with a slight upward drift, one after another in reading order (110ms apart, never more than 550ms of waiting).
-  - Hero: the text block drifts down at 22% of the scroll speed and the headline and sub line fade to 45%, so the next section takes over.
-  - Work photos (once they exist) drift inside their frame (`[data-parallax]`); CSS and markup are ready in `index.html`.
-  - Only `transform` and `opacity` are animated. Nothing bounces, spins or slides in from the side.
-  - "Bel Edward" buttons, the phone number, the nav and the call bar are never part of the scroll animations: never faded, delayed or covered.
-  - Everything is in the HTML and readable without JavaScript; motion only runs when JS adds `html.motion`.
-- Respect `prefers-reduced-motion`: no intro, no smooth scrolling, no scroll animations, everything simply visible.
+- **Scrolling:** native. The heading tape draws in from the left once when its h2 enters the viewport. Nothing else animates on scroll.
+  - "Bel Edward" buttons, the phone number, the nav and the call bar are never part of any animation.
+  - Everything is in the HTML and readable without JavaScript; the draw-in only runs when JS adds `html.motion`.
+- Respect `prefers-reduced-motion`: no intro, no heading-tape animation, everything simply visible.
 
 ## 8. Navigation
 
-- Slim top bar: tape-scrap mark + "De-Lina" + "Klussenbedrijf" on the left, "Bel Edward" button on the right (hidden on phones); an anchor menu (Diensten, Werkwijze, Prijs, Vragen, Contact) on wide screens, with the current section underlined in tape.
+- Slim top bar: tape-scrap mark + "De-Lina" + "Klussenbedrijf" on the left, "Bel Edward" button on the right (hidden on phones); an anchor menu (Diensten, Prijs, Vragen, Contact) on wide screens, with the current section underlined in tape.
 - Always visible (changed Oct 2026 at the client's request; it used to hide on scroll down).
 - On mobile: also a fixed "Bel Edward" button at the bottom of the screen once the hero is scrolled past (respect `env(safe-area-inset-bottom)`).
 
@@ -186,3 +180,6 @@ Spend all boldness here; keep everything else quiet.
 - Can he send 4–6 photos of finished jobs?
 - Is "De-Lina" spelled exactly like that?
 - Does he want WhatsApp as a contact option?
+- Is P.C. Hooftlaan 58 a home address? May it be shown on the site with a map? (If not: remove the address, the map and the JSON-LD address, and show a work area instead.)
+- May the site say "Ik kom kijken" (step 2 of "Zo werk ik") and "vooraf duidelijk wat het kost" (Eerlijke prijs)? These are our wording, not from the flyer.
+- Privacy page: where will the site be hosted, and how long does he keep e-mails and WhatsApp messages? (TODO in `privacy.html`.)

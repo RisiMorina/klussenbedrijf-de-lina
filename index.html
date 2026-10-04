@@ -6,10 +6,15 @@
 <title>Klussenbedrijf De-Lina — schilderwerk, stucwerk en vloeren</title>
 <meta name="description" content="Edward van Klussenbedrijf De-Lina uit Deventer doet schilderwerk binnen en buiten, sauzen, stucwerk, tapijt en laminaat. Geen reiskosten, geen reisuren. Bel 06 42 92 02 03.">
 <meta name="theme-color" content="#E6E4DF">
-<!-- link preview when the site is shared on WhatsApp / social media -->
+<!-- link preview when the site is shared on WhatsApp / social media. TODO: make og:image an absolute URL (https://…/images/og-image.png) once the site is hosted; previews ignore relative paths -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="nl_NL">
 <meta property="og:title" content="Klussenbedrijf De-Lina — schilderwerk, stucwerk en vloeren">
+<meta property="og:image" content="images/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Klussenbedrijf De-Lina · Schilder en klusser in Deventer">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:description" content="Schilderwerk binnen en buiten, sauzen, stucwerk, tapijt en laminaat. Geen reiskosten, geen reisuren. Bel Edward: 06 42 92 02 03.">
 <!-- business details for Google (only facts Edward gave us) -->
 <script type="application/ld+json">
@@ -59,28 +64,12 @@
     var root = document.documentElement;
     root.classList.add('js');
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    // Scroll animations only enhance: without this class everything is simply visible
+    // The only motion besides the intro: the tape under headings is drawn in. Without this class everything is simply visible.
     root.classList.add('motion');
-    // html.ready starts the entrance of the logo and hero note (set after the intro, or right away without one).
-    // Safety net: whatever happens, they are never left hidden.
-    setTimeout(function () { root.classList.add('ready'); }, 2600);
-
-    // Scroll-driven intro until it has been painted once this visit; never when storage is blocked
+    // Brush-stroke intro until it has been painted once this visit; never when storage is blocked
     try {
       if (!sessionStorage.getItem('delina-intro')) root.classList.add('has-intro');
     } catch (e) {}
-
-    // Smooth (inertia) scrolling on mouse/trackpad devices only; phones keep native scrolling
-    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js';
-      s.integrity = 'sha384-jqpi9VmOdhyLoLURgjCn7EpnG9BbnHW57ibIZoeaIU+erWDH3k8fQQg0xH2ySjnw';
-      s.crossOrigin = 'anonymous';
-      s.async = true;
-      // anchor offset keeps section headings clear of the (always visible) nav
-      s.onload = function () { window.lenis = new Lenis({ lerp: .085, wheelMultiplier: .9, autoRaf: true, anchors: { offset: -92 } }); };
-      document.head.appendChild(s);
-    }
   })();
 </script>
 <style>
@@ -104,7 +93,7 @@
     --btn-h: 3.5rem;
     --nav-h: 4.25rem;
     --ease: cubic-bezier(.2, .6, .2, 1);
-    --ease-out: cubic-bezier(.16, 1, .3, 1);   /* long, calm settle for scroll reveals */
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
 
     /* fine plaster grain: neutral noise, only darkens the ground a touch (no new colour) */
     --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .14 0 0 0 0 .16 .11 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -123,7 +112,6 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection { background: var(--tape); color: #fff; }
-  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 
   /* keyboard users can jump straight past the hero */
   .skip {
@@ -154,14 +142,6 @@
     position: relative; isolation: isolate; overflow: hidden;
     transition: transform .15s ease;
   }
-  /* hover: a darker coat is rolled across the button from the left */
-  .btn::before {
-    content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: -1;
-    background: var(--tape-dark);
-    transform: scaleX(0); transform-origin: right center;
-    transition: transform .45s var(--ease-out);
-  }
-  .btn:hover::before { transform: scaleX(1); transform-origin: left center; }
   .btn:active { background: var(--tape-dark); transform: scale(.98); }
   .btn:focus-visible { background: var(--tape-dark); outline-color: var(--ink); }
 
@@ -186,10 +166,6 @@
   @media (max-width: 340px) { .logo-sub { display: none; } }
   /* Edward's logo (images/logo.png: transparent cut-out of the supplied artwork) */
   .logo-img { display: block; width: 2.875rem; height: 2.875rem; flex: none; }
-  /* the logo turns into place once the page is ready (after the intro) */
-  .motion .logo-img { transition: transform 1.1s var(--ease-out), opacity .5s ease; }
-  .motion:not(.ready) .logo-img { transform: rotate(-120deg) scale(.6); opacity: 0; }
-
   .nav-links { display: none; }
   @media (min-width: 1180px) {
     .nav-links { display: flex; gap: 1.75rem; margin-left: auto; margin-right: .5rem; }
@@ -211,13 +187,6 @@
   .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
   /* phones: the hero has its own button and the call bar takes over after it, so the nav doesn't repeat it */
   @media (max-width: 640px) { .nav .btn { display: none; } }
-  /* reading progress: a thin strip of tape along the bottom of the nav */
-  .progress { display: none; }
-  .motion .progress {
-    display: block; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
-    background: var(--tape); transform: scaleX(0); transform-origin: left center;
-  }
-
   /* ---------- Painter's tape on headings ---------- */
   .taped { position: relative; isolation: isolate; display: inline-block; }
   .taped::before {
@@ -255,7 +224,6 @@
 
   /* ---------- Hero ---------- */
   .hero {
-    overflow: hidden; overflow: clip;   /* the parallax drift never runs into the band below */
     min-height: 100vh; min-height: min(100vh, 60rem); min-height: min(100svh, 60rem); display: flex; flex-direction: column; justify-content: center;
     padding-top: calc(var(--nav-h) + clamp(4rem, 14vw, 10rem));
     padding-bottom: clamp(3rem, 8vw, 6rem);
@@ -303,36 +271,21 @@
       border: solid var(--tape-dark); border-width: 0 2px 2px 0;
       transform: rotate(40deg);
     }
-    /* entrance: once the intro is done (html.ready) the note drops onto the wall, then the tape is pressed on;
-       afterwards it tilts a little with the mouse (--rx/--ry set by JS) */
-    .motion .memo {
-      transform: perspective(900px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) rotate(1.2deg);
-      transition: opacity .6s ease, transform .9s var(--ease-out);
-    }
-    .motion:not(.ready) .memo { opacity: 0; transform: translateY(-2.5rem) rotate(7deg); }
-    .motion .memo::before, .motion .memo::after { transition: transform .45s var(--ease-out) .7s; }
-    .motion:not(.ready) .memo::before { transform: rotate(-32deg) scaleX(0); }
-    .motion:not(.ready) .memo::after { transform: rotate(28deg) scaleX(0); }
     .memo-foot { margin-top: 1rem; padding-top: .9rem; border-top: 1px solid var(--line); color: var(--muted); }
     .memo-foot a { font-weight: 600; }
   }
 
   /* ---------- Tape band: one long strip across the wall, the services written on it ---------- */
   .band {
-    margin: 0 -2rem; padding: 1.1rem 0;
+    margin: 0 -2rem; padding: 1.1rem 2rem;
     background: var(--tape); color: #fff;
     clip-path: polygon(0 6%, 50% 0, 100% 8%, 100% 94%, 50% 100%, 0 92%);
     transform: rotate(-1.5deg);
-    overflow: hidden;
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .25rem 1.5rem;
+    font: 800 clamp(1.25rem, 2.3vw, 2rem)/1.2 var(--font-head); font-stretch: 85%; letter-spacing: -.005em;
   }
-  .band-track { display: flex; width: max-content; }
-  .band-track span {
-    display: flex; align-items: center; gap: 2rem; padding-right: 2rem; white-space: nowrap;
-    font: 800 clamp(1.5rem, 3vw, 2.25rem)/1 var(--font-head); font-stretch: 85%; letter-spacing: -.005em;
-  }
-  .band-track span::after { content: ""; width: .5em; height: .5em; border: 2px solid currentColor; border-radius: 50%; opacity: .7; }
-  /* moved by the scroll script: drifts on its own, speeds up while you scroll and follows the scroll direction */
-  .motion .band-track { will-change: transform; }
+  .band span { display: flex; align-items: center; gap: 1.5rem; white-space: nowrap; }
+  .band span:not(:last-child)::after { content: ""; width: .5em; height: .5em; border: 2px solid currentColor; border-radius: 50%; opacity: .7; }
 
   /* ---------- Intro: a brush stroke paints the page open (~1s, scrolling speeds it up) ---------- */
   /* Shown only once the intro script has set it up (html.intro-on), so a broken script never hides the page.
@@ -378,16 +331,6 @@
   @media (min-width: 600px) { .steps { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1000px) { .steps { grid-template-columns: repeat(4, 1fr); } }
   .steps li { border-top: 1px solid var(--line); padding-top: 1.5rem; }
-  /* wide screens: a strip of tape runs along the top of the steps as you scroll through them */
-  .steps { position: relative; }
-  @media (min-width: 1000px) {
-    .motion .steps::before {
-      content: ""; position: absolute; z-index: 1; left: 0; right: 0; top: -1px; height: 3px;
-      background: var(--tape); clip-path: var(--torn);
-      transform: scaleX(var(--p, 0)); transform-origin: left center;   /* --p is set by the scroll script */
-    }
-  }
-
   /* ---------- Statement: Edward's own line on a dark wall ---------- */
   .statement { background: var(--ink); color: var(--plaster); }
   .statement figure { margin: 0; max-width: 62rem; position: relative; }
@@ -400,7 +343,6 @@
     font: 800 clamp(2rem, 5.2vw, 4.25rem)/1.04 var(--font-head); font-stretch: 85%; letter-spacing: -.015em;
     text-wrap: balance;
   }
-  .quote .w { transition: opacity .25s linear; }
   .statement figcaption { margin-top: 2rem; color: var(--plaster); opacity: .75; font-size: 1rem; }
   .statement figcaption strong { opacity: 1; font-weight: 600; }
   /* the step number is written on a scrap of painter's tape */
@@ -547,80 +489,29 @@
   .work { padding: var(--section) 0 0; }
   .work-photo { margin: 0; overflow: hidden; aspect-ratio: 16 / 9; background: var(--wall); }
   .work-photo + .work-photo { margin-top: clamp(1rem, 3vw, 2.5rem); }
-  /* image is 20% taller than its frame so it can drift inside it */
-  .work-photo img { display: block; width: 100%; height: 120%; margin-top: -10%; object-fit: cover; }
+  .work-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
   @media (max-width: 640px) {
     .work-photo { aspect-ratio: 4 / 3; }
     .work-photo + .work-photo { margin-top: 30vh; margin-top: 30svh; }   /* one photo per screen */
   }
 
-  /* ---------- Smooth scrolling (Lenis' required CSS) ---------- */
-  html.lenis, html.lenis body { height: auto; }
-  .lenis.lenis-smooth { scroll-behavior: auto !important; }
-  html.motion { scroll-behavior: smooth; }   /* menu links glide on touch devices too */
-  .lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
-
-  /* ---------- Scroll motion (only with html.motion: JS on, no reduced motion) ---------- */
-  .motion .reveal {
-    opacity: 0; transform: translateY(1.5rem);
-    transition: opacity .9s ease, transform 1.2s var(--ease-out);
-    transition-delay: var(--d, 0ms);
+  /* ---------- Motion (only with html.motion: JS on, no reduced motion) ---------- */
+  /* the tape under each heading is drawn in from the left when the heading scrolls into view */
+  .motion h2 .taped::before { transform: rotate(-1.5deg) scaleX(0); }
+  .motion h2.in .taped::before {
+    transform: rotate(-1.5deg) scaleX(1);
+    transition: transform .9s cubic-bezier(.65, 0, .35, 1) .15s;
   }
-  .motion .reveal.in { opacity: 1; transform: none; }
-
-  /* divider lines are drawn in from the left, like a pencil line along a ruler */
-  .motion :is(.list li, .points li).reveal { position: relative; border-bottom-color: transparent; }
-  .motion .steps li.reveal { position: relative; border-top-color: transparent; }
-  .motion :is(.list li, .points li, .steps li).reveal::after {
-    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
-    background: var(--line);
-    transform: scaleX(0); transform-origin: left center;
-    transition: transform 1.4s var(--ease-out) calc(var(--d, 0ms) + 120ms);
-  }
-  .motion .steps li.reveal::after { top: -1px; bottom: auto; }
-  .motion :is(.list li, .points li, .steps li).in::after { transform: none; }
-
-  /* step numbers are pressed on like a scrap of tape: a little big and crooked, then flat */
-  .motion .steps .num {
-    opacity: 0; transform: rotate(calc(var(--r, -2deg) - 7deg)) scale(1.3);
-    transition: opacity .35s ease calc(var(--d, 0ms) + 250ms), transform .7s var(--ease-out) calc(var(--d, 0ms) + 250ms);
-  }
-  .motion .steps .in .num { opacity: 1; transform: rotate(var(--r, -2deg)); }
-
-  /* FAQ answers ease in when opened */
-  .motion .faq details[open] p { animation: faq-in .5s var(--ease-out); }
-  @keyframes faq-in { from { opacity: 0; transform: translateY(-.5rem); } }
-
-  /* headings: split into lines by JS, each line slides up from behind its own mask */
-  .motion [data-split]:not(.split) { opacity: 0; }
-  .split .line { display: block; overflow: hidden; padding: .1em 0 .18em; margin: -.1em 0 -.18em; }
-  .split .line > span { display: block; }
-  .motion .split .line > span {
-    transform: translateY(115%); opacity: 0;
-    transition: transform 1.2s var(--ease-out), opacity .9s ease;
-    transition-delay: calc(var(--d, 0ms) + var(--l, 0) * 110ms);
-  }
-  .motion .split.in .line > span { transform: none; opacity: 1; }
-  /* then the tape is drawn in under it (hidden from the start, so it never animates out first) */
-  .motion [data-split] .taped::before { transform: rotate(-1.5deg) scaleX(0); }
-  .motion .split.in .taped::before {
-    transition: transform .9s cubic-bezier(.65, 0, .35, 1) calc(var(--d, 0ms) + var(--tape-delay, .5s));
-  }
-  .motion .split.in .taped::before { transform: rotate(-1.5deg) scaleX(1); }
-
-  /* hero drifts slower than the page; transform/opacity are set by JS */
-  .motion .hero .wrap { will-change: transform; }
 
   @media print {
     .nav, .callbar, .intro, .band, .map, .skip, .wordmark { display: none !important; }
     body { background: #fff; }
-    .reveal, [data-split], .split .line > span { opacity: 1 !important; transform: none !important; }
     .statement { background: none; color: var(--ink); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .intro { display: none !important; }
-    .nav, .callbar, .btn, .btn::before, .phone::before, .faq summary::after, .nav-links a::after, .copy { transition: none; }
+    .nav, .callbar, .btn, .phone::before, .faq summary::after, .nav-links a::after, .copy { transition: none; }
   }
 </style>
 </head>
@@ -728,7 +619,6 @@
     if (done) return; done = true;
     intro.remove();
     root.classList.remove('intro-on', 'has-intro');
-    root.classList.add('ready');
     try { sessionStorage.setItem('delina-intro', '1'); } catch (e) {}
     scrollInput.forEach(function (t) { removeEventListener(t, hurry); });
     removeEventListener('keydown', onKey);
@@ -761,17 +651,14 @@
     <a class="logo" href="#top" aria-label="Klussenbedrijf De-Lina, naar boven"><img class="logo-img" src="images/logo.png" width="522" height="522" alt=""><span class="logo-name">De-Lina</span><span class="logo-sub">Klussenbedrijf</span></a>
     <nav class="nav-links" aria-label="Hoofdmenu">
       <a href="#diensten">Diensten</a>
-      <a href="#werkwijze">Werkwijze</a>
       <a href="#prijs">Prijs</a>
       <a href="#vragen">Vragen</a>
       <a href="#contact">Contact</a>
-      <a href="#locatie">Locatie</a>
     </nav>
     <div class="nav-actions">
       <a class="btn" href="tel:+31642920203">Bel Edward</a>
     </div>
   </div>
-  <span class="progress" id="progress" aria-hidden="true"></span>
 </header>
 
 <main id="top">
@@ -807,25 +694,22 @@
 
   <!-- one long strip of tape across the wall; decorative, the services are listed below -->
   <div class="band" aria-hidden="true">
-    <div class="band-track">
-      <span>Schilderwerk</span><span>Verven en sauzen</span><span>Stucwerk</span><span>Tapijt</span><span>Laminaat</span><span>Binnen en buiten</span>
-      <span>Schilderwerk</span><span>Verven en sauzen</span><span>Stucwerk</span><span>Tapijt</span><span>Laminaat</span><span>Binnen en buiten</span>
-    </div>
+    <span>Schilderwerk</span><span>Verven en sauzen</span><span>Stucwerk</span><span>Tapijt</span><span>Laminaat</span><span>Binnen en buiten</span>
   </div>
 
   <section class="services" id="diensten" aria-labelledby="services-title">
     <div class="wrap layout">
       <div class="side">
-        <h2 id="services-title" data-split><span class="taped">Wat ik doe</span></h2>
-        <p class="lead reveal">Van een kamer sauzen tot een nieuwe vloer. Ik werk met goed materiaal, zodat u er jaren plezier van hebt.</p>
+        <h2 id="services-title"><span class="taped">Wat ik doe</span></h2>
+        <p class="lead">Van een kamer sauzen tot een nieuwe vloer. Ik werk met goed materiaal, zodat u er jaren plezier van hebt.</p>
       </div>
       <div class="main">
       <ul class="list">
-        <li class="reveal"><span class="name">Schilderwerk</span><span class="note">binnen en buiten</span></li>
-        <li class="reveal"><span class="name">Verven en sauzen</span></li>
-        <li class="reveal"><span class="name">Stucwerk</span></li>
-        <li class="reveal"><span class="name">Tapijt</span><span class="note">ook op trappen</span></li>
-        <li class="reveal"><span class="name">Laminaat</span></li>
+        <li><span class="name">Schilderwerk</span><span class="note">binnen en buiten</span></li>
+        <li><span class="name">Verven en sauzen</span></li>
+        <li><span class="name">Stucwerk</span></li>
+        <li><span class="name">Tapijt</span><span class="note">ook op trappen</span></li>
+        <li><span class="name">Laminaat</span></li>
       </ul>
       </div>
     </div>
@@ -833,24 +717,24 @@
 
   <!-- TODO: Werk-sectie met 4–6 echte foto's van Edward. Weggelaten tot er foto's zijn.
        Klaar voor gebruik: zet de foto's in /images (liggend, ±1600px breed), haal dit commentaar weg
-       en vul alt-teksten in. CSS (.work-photo) en de parallax ([data-parallax]) staan al klaar.
+       en vul alt-teksten in. CSS (.work-photo) staat al klaar.
 
   <section class="work" aria-label="Werk van Edward">
-    <figure class="work-photo"><img src="images/werk-1.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async" data-parallax></figure>
-    <figure class="work-photo"><img src="images/werk-2.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async" data-parallax></figure>
-    <figure class="work-photo"><img src="images/werk-3.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async" data-parallax></figure>
-    <figure class="work-photo"><img src="images/werk-4.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async" data-parallax></figure>
+    <figure class="work-photo"><img src="images/werk-1.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async"></figure>
+    <figure class="work-photo"><img src="images/werk-2.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async"></figure>
+    <figure class="work-photo"><img src="images/werk-3.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async"></figure>
+    <figure class="work-photo"><img src="images/werk-4.jpg" alt="TODO" width="1600" height="1067" loading="lazy" decoding="async"></figure>
   </section>
   -->
 
   <section class="how follows" id="werkwijze" aria-labelledby="how-title">
     <div class="wrap">
-      <h2 id="how-title" data-split><span class="taped">Zo werk ik</span></h2>
+      <h2 id="how-title"><span class="taped">Zo werk ik</span></h2>
       <ol class="steps">
-        <li class="reveal"><span class="num" aria-hidden="true">1</span><h3>U belt of appt</h3><p>Vertel kort wat er moet gebeuren.</p></li>
-        <li class="reveal"><span class="num" aria-hidden="true">2</span><h3>Ik kom kijken</h3><p>Ik bekijk de klus bij u ter plekke.</p></li>
-        <li class="reveal"><span class="num" aria-hidden="true">3</span><h3>U hoort wat het kost</h3><p>Eerlijk en duidelijk, voordat ik begin.</p></li>
-        <li class="reveal"><span class="num" aria-hidden="true">4</span><h3>Ik ga aan de slag</h3><p>Met goed materiaal, netjes afgewerkt.</p></li>
+        <li><span class="num" aria-hidden="true">1</span><h3>U belt of appt</h3><p>Vertel kort wat er moet gebeuren.</p></li>
+        <li><span class="num" aria-hidden="true">2</span><h3>Ik kom kijken</h3><p>Ik bekijk de klus bij u ter plekke.</p></li>
+        <li><span class="num" aria-hidden="true">3</span><h3>U hoort wat het kost</h3><p>Eerlijk en duidelijk, voordat ik begin.</p></li>
+        <li><span class="num" aria-hidden="true">4</span><h3>Ik ga aan de slag</h3><p>Met goed materiaal, netjes afgewerkt.</p></li>
       </ol>
     </div>
   </section>
@@ -867,14 +751,14 @@
   <section class="price" id="prijs" aria-labelledby="price-title">
     <div class="wrap layout">
       <div class="side">
-        <h2 id="price-title" data-split><span class="taped">Eerlijke prijs</span></h2>
-        <p class="lead reveal">Over de prijs komen we samen altijd uit. Daar kunt u op rekenen.</p>
+        <h2 id="price-title"><span class="taped">Eerlijke prijs</span></h2>
+        <p class="lead">Over de prijs komen we samen altijd uit. Daar kunt u op rekenen.</p>
       </div>
       <ul class="points main">
-        <li class="reveal"><strong>Geen reiskosten</strong><span>En ook geen reisuren.</span></li>
-        <li class="reveal"><strong>Vooraf duidelijk</strong><span>U weet wat het kost voordat ik begin.</span></li>
-        <li class="reveal"><strong>Goed materiaal</strong><span>Zodat u er jaren plezier van hebt.</span></li>
-        <li class="reveal"><strong>Eén vakman</strong><span>U hebt alleen met mij te maken.</span></li>
+        <li><strong>Geen reiskosten</strong><span>En ook geen reisuren.</span></li>
+        <li><strong>Vooraf duidelijk</strong><span>U weet wat het kost voordat ik begin.</span></li>
+        <li><strong>Goed materiaal</strong><span>Zodat u er jaren plezier van hebt.</span></li>
+        <li><strong>Eén vakman</strong><span>U hebt alleen met mij te maken.</span></li>
       </ul>
     </div>
   </section>
@@ -882,25 +766,25 @@
   <section class="faq follows" id="vragen" aria-labelledby="faq-title">
     <div class="wrap layout">
       <div class="side">
-        <h2 id="faq-title" data-split><span class="taped">Goed om te weten</span></h2>
-        <p class="lead reveal">Staat uw vraag er niet bij? Vraag het mij gerust, dan hoort u het meteen.</p>
-        <p class="side-link reveal"><a href="#contact">Neem contact op</a></p>
+        <h2 id="faq-title"><span class="taped">Goed om te weten</span></h2>
+        <p class="lead">Staat uw vraag er niet bij? Vraag het mij gerust, dan hoort u het meteen.</p>
+        <p class="side-link"><a href="#contact">Neem contact op</a></p>
       </div>
       <div class="faq-list main">
-        <details class="reveal"><summary>Wat kost een klus?</summary><p>Dat hangt af van het werk. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p></details>
-        <details class="reveal"><summary>Werkt u ook buiten?</summary><p>Ja. Schilderwerk doe ik binnen en buiten.</p></details>
-        <details class="reveal"><summary>Legt u ook tapijt op de trap?</summary><p>Ja, ik leg tapijt ook op trappen.</p></details>
-        <details class="reveal"><summary>Met wie heb ik te maken?</summary><p>Met mij, Edward. Ik werk alleen en doe het werk zelf.</p></details>
-        <details class="reveal"><summary>Waar zit u?</summary><p>In Deventer, aan de P.C. Hooftlaan 58. <a href="#locatie">Bekijk de kaart</a></p></details>
-        <details class="reveal"><summary>Kan ik ook een bericht sturen?</summary><p>Zeker. Via <a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">WhatsApp</a> of per <a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">e-mail</a>.</p></details>
+        <details><summary>Wat kost een klus?</summary><p>Dat hangt af van het werk. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p></details>
+        <details><summary>Werkt u ook buiten?</summary><p>Ja. Schilderwerk doe ik binnen en buiten.</p></details>
+        <details><summary>Legt u ook tapijt op de trap?</summary><p>Ja, ik leg tapijt ook op trappen.</p></details>
+        <details><summary>Met wie heb ik te maken?</summary><p>Met mij, Edward. Ik werk alleen en doe het werk zelf.</p></details>
+        <details><summary>Waar zit u?</summary><p>In Deventer, aan de P.C. Hooftlaan 58. <a href="#locatie">Bekijk de kaart</a></p></details>
+        <details><summary>Kan ik ook een bericht sturen?</summary><p>Zeker. Via <a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">WhatsApp</a> of per <a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">e-mail</a>.</p></details>
       </div>
     </div>
   </section>
 
   <section class="contact" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
-      <h2 id="contact-title" data-split><span class="taped">Even kennismaken?</span></h2>
-      <p class="lead reveal">Bel of app gerust. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p>
+      <h2 id="contact-title"><span class="taped">Even kennismaken?</span></h2>
+      <p class="lead">Bel of app gerust. Ik kom langs, kijk wat er moet gebeuren en vertel u eerlijk wat het kost.</p>
       <div class="phone-row">
         <a class="phone" href="tel:+31642920203" aria-label="Bel Edward: 06 42 92 02 03">06 42 92 02 03</a>
         <!-- computers can't tap to call: offer to copy the number (shown by JS on mouse devices only) -->
@@ -927,7 +811,7 @@
             <dd><span class="todo">TODO</span></dd>
           </div>
         </dl>
-        <div class="map reveal">
+        <div class="map">
           <iframe src="https://www.google.com/maps?q=P.C.+Hooftlaan+58,+7412+PT+Deventer&amp;z=15&amp;output=embed" title="Kaart: P.C. Hooftlaan 58, Deventer" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
@@ -968,6 +852,7 @@
       <p class="legal-links">
         <!-- word of mouth: share the site (Web Share on phones, otherwise copy the link); shown by JS -->
         <button class="linkbtn" type="button" id="share" hidden>Deel deze site</button>
+        <a href="privacy.html">Privacy</a>
         <a href="#top">Naar boven</a>
       </p>
     </div>
@@ -992,11 +877,6 @@
   function navState() { nav.classList.toggle('is-scrolled', window.scrollY > 8); }
   window.addEventListener('scroll', navState, { passive: true });
   navState();
-
-  // No intro this visit: logo and hero note make their entrance right away
-  if (!document.documentElement.classList.contains('has-intro')) {
-    setTimeout(function () { document.documentElement.classList.add('ready'); }, 120);
-  }
 
   // Copy to clipboard (with a fallback for browsers without the Clipboard API)
   function copyText(text) {
@@ -1041,7 +921,6 @@
   }
 
   var motion = document.documentElement.classList.contains('motion');
-  var animated = document.querySelectorAll('.reveal');
 
   if (!('IntersectionObserver' in window)) {
     document.documentElement.classList.remove('motion');
@@ -1057,8 +936,6 @@
   // Menu: underline the section that is in the middle of the screen
   var links = {};
   nav.querySelectorAll('.nav-links a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
-  // #locatie sits inside #contact, so keep track of everything in the middle band and underline
-  // the last one in page order (the most specific)
   var inView = {}, order = Object.keys(links);
   var spy = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) { inView[e.target.id] = e.isIntersecting; });
@@ -1068,173 +945,17 @@
   }, { rootMargin: '-45% 0px -50% 0px' });
   Object.keys(links).forEach(function (id) { var s = document.getElementById(id); if (s) spy.observe(s); });
 
-  if (!motion) return;
-
-  // Headings: split into lines (after the web font is in, so line breaks are final)
-  function splitLines(h) {
-    var t = h.querySelector('.taped') || h;
-    var text = t.dataset.text || (t.dataset.text = t.textContent.trim());
-    t.textContent = '';
-    var words = text.split(/\s+/).map(function (w) {
-      var s = document.createElement('span');
-      s.textContent = w;
-      t.appendChild(s); t.appendChild(document.createTextNode(' '));
-      return s;
-    });
-    var lines = [], top = null;
-    words.forEach(function (w) {
-      if (w.offsetTop !== top) { lines.push([]); top = w.offsetTop; }
-      lines[lines.length - 1].push(w.textContent);
-    });
-    t.textContent = '';
-    lines.forEach(function (ws, i) {
-      var line = document.createElement('span'), inner = document.createElement('span');
-      line.className = 'line';
-      inner.textContent = ws.join(' ');
-      inner.style.setProperty('--l', i);
-      line.appendChild(inner); t.appendChild(line);
-    });
-    h.style.setProperty('--tape-delay', lines.length * 110 + 450 + 'ms');
-    h.classList.add('split');
-  }
-  var headings = document.querySelectorAll('[data-split]');
-  function splitAll() { headings.forEach(splitLines); }
-  var fontsIn = document.fonts ? document.fonts.ready : Promise.resolve();
-  Promise.race([fontsIn, new Promise(function (r) { setTimeout(r, 1500); })]).then(function () {
-    splitAll();
-    headings.forEach(function (h) { io.observe(h); });   // only watch headings once they're split
-  });
-  var lastW = innerWidth, resizeT;
-  addEventListener('resize', function () {
-    if (innerWidth === lastW) return;   // ignore mobile URL-bar height changes
-    lastW = innerWidth;
-    clearTimeout(resizeT); resizeT = setTimeout(splitAll, 150);
-  });
-
-  // Reveal: one item after another, in reading order. One running queue, so an item that
-  // enters later never overtakes one that is still waiting for its turn.
-  var STEP = 110, queueEnd = 0;
-  var io = new IntersectionObserver(function (entries) {
-    entries.filter(function (e) { return e.isIntersecting; })
-      .map(function (e) { return e.target; })
-      .sort(function (a, b) { return a.compareDocumentPosition(b) & 4 ? -1 : 1; })
-      .forEach(function (el) {
-        var now = performance.now(), at = Math.max(now, Math.min(queueEnd, now + 550));   // never wait more than 550ms
-        queueEnd = at + STEP;
-        el.style.setProperty('--d', Math.round(at - now) + 'ms');
-        el.classList.add('in');
-        io.unobserve(el);
+  // Headings: the tape under them is drawn in once, when the heading comes into view
+  if (motion) {
+    var tapes = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        tapes.unobserve(e.target);
       });
-  }, { rootMargin: '0px 0px -10% 0px' });
-  animated.forEach(function (el) { io.observe(el); });
-
-  // Parallax: hero text drifts slower than the page and fades a little; work photos drift inside their frame
-  var heroWrap = hero.querySelector('.wrap');
-  var heroFade = hero.querySelectorAll('h1, .sub');   // never the buttons
-  var photos = document.querySelectorAll('[data-parallax]');
-  var progress = document.getElementById('progress');
-  var steps = document.querySelector('.steps');
-  var footer = document.querySelector('footer'), wordmark = document.querySelector('.wordmark');
-
-  // Tape band: drifts by itself; scrolling adds speed and sets the direction. Only runs while it's on screen.
-  var band = document.querySelector('.band'), track = band && band.querySelector('.band-track');
-  if (track) {
-    var half = 0, bx = 0, boost = 0, dir = 1, lastSY = scrollY, lastT = null, bandOn = false, raf = null;
-    var measure = function () { half = track.scrollWidth / 2; };
-    measure();
-    if (document.fonts) document.fonts.ready.then(measure);
-    addEventListener('resize', measure);
-    var bandFrame = function (t) {
-      raf = null;
-      if (!bandOn) { lastT = null; return; }
-      var dt = lastT === null ? 16 : Math.min(t - lastT, 50); lastT = t;
-      var sy = scrollY, dy = sy - lastSY; lastSY = sy;
-      if (dy) dir = dy > 0 ? 1 : -1;
-      boost += (Math.min(Math.abs(dy), 80) * .35 - boost) * .08;        // eases in and out, never jumps
-      bx -= (.035 * dt + boost) * dir;                                  // ~35px/s by itself
-      if (half) { bx %= half; if (bx > 0) bx -= half; }
-      track.style.transform = 'translate3d(' + bx.toFixed(1) + 'px,0,0)';
-      raf = requestAnimationFrame(bandFrame);
-    };
-    new IntersectionObserver(function (e) {
-      bandOn = e[0].isIntersecting;
-      if (bandOn && !raf) raf = requestAnimationFrame(bandFrame);
-    }).observe(band);
+    }, { rootMargin: '0px 0px -10% 0px' });
+    document.querySelectorAll('h2').forEach(function (h) { tapes.observe(h); });
   }
-
-  // Hero note follows the mouse with a slight tilt (mouse devices, wide screens)
-  var memo = document.querySelector('.memo');
-  if (memo && matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    hero.addEventListener('mousemove', function (e) {
-      if (innerWidth < 1000) return;
-      var r = hero.getBoundingClientRect();
-      memo.style.setProperty('--rx', ((e.clientX - r.left) / r.width - .5) * 8 + 'deg');
-      memo.style.setProperty('--ry', -((e.clientY - r.top) / r.height - .5) * 8 + 'deg');
-    });
-    hero.addEventListener('mouseleave', function () {
-      memo.style.setProperty('--rx', '0deg'); memo.style.setProperty('--ry', '0deg');
-    });
-  }
-
-  // Statement: split into words, which light up one after another as it scrolls through the screen
-  var quote = document.getElementById('quote'), words = [];
-  if (quote) {
-    var qText = quote.textContent.trim();
-    quote.textContent = '';
-    var plain = document.createElement('span');   // screen readers get the sentence in one piece
-    plain.className = 'sr'; plain.textContent = qText;
-    quote.appendChild(plain);
-    qText.split(/\s+/).forEach(function (w) {
-      var s = document.createElement('span');
-      s.className = 'w'; s.textContent = w; s.setAttribute('aria-hidden', 'true');
-      quote.appendChild(s); quote.appendChild(document.createTextNode(' '));
-      words.push(s);
-    });
-  }
-  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
-  var ticking = false;
-  function update() {
-    ticking = false;
-    var y = scrollY, vh = innerHeight, hh = hero.offsetHeight;
-    var max = document.documentElement.scrollHeight - vh;
-    progress.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0).toFixed(4) + ')';
-
-    // footer: the big name rises into place as the footer scrolls in
-    var fr = footer.getBoundingClientRect();
-    if (fr.top < vh) {
-      var fp = clamp01((vh - fr.top) / fr.height);
-      wordmark.style.transform = 'translate(-50%,' + ((1 - fp) * 45).toFixed(1) + '%)';
-    }
-
-    // steps: the tape fills from when they enter the lower part of the screen until they reach the middle
-    var sr = steps.getBoundingClientRect();
-    steps.style.setProperty('--p', clamp01((vh * .9 - sr.top) / (vh * .5)).toFixed(3));
-
-    // statement words: from dim to full as the quote moves from 85% to 35% of the screen height
-    if (words.length) {
-      var qr = quote.getBoundingClientRect();
-      var lit = clamp01((vh * .85 - qr.top) / (vh * .5)) * words.length;
-      words.forEach(function (w, i) {
-        var o = (.22 + .78 * clamp01(lit - i)).toFixed(2);
-        if (w.style.opacity !== o) w.style.opacity = o;
-      });
-    }
-    if (y <= hh * 1.2) {
-      var p = Math.min(y / hh, 1);
-      heroWrap.style.transform = 'translate3d(0,' + (y * .22).toFixed(1) + 'px,0)';
-      heroFade.forEach(function (el) { el.style.opacity = (1 - p * .55).toFixed(3); });
-    }
-    photos.forEach(function (img) {
-      var r = img.parentNode.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > vh) return;
-      var progress = (vh - r.top) / (vh + r.height);   // 0 entering, 1 leaving
-      img.style.transform = 'translate3d(0,' + ((progress - .5) * r.height * .2).toFixed(1) + 'px,0)';
-    });
-  }
-  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', onScroll);
-  update();
 })();
 </script>
 </body>
