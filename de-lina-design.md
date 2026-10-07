@@ -79,7 +79,7 @@ A homeowner or small business owner needs a painter or handyman and wants to kno
 - **Statement band:** after "Zo werk ik", a dark (`--ink`) band with Edward's own slogan as a big quote ("Kwaliteit voor een betaalbare prijs. Met goed materiaal, zodat u er jaren plezier van hebt."); static, no word-by-word effect.
 - **Texture:** a very fine plaster grain on the `--plaster` ground; the `--wall` contact band stays smooth like fresh paint. The footer ends with a huge, quiet "De-Lina" wordmark in `--wall`.
 - **Small, useful helpers:** WhatsApp and e-mail links open with a short message already filled in; "Zet Edward in uw contacten" saves a contact card; on computers a "Kopieer nummer" button next to the big number; "Deel deze site" in the footer (word of mouth matters for a one-man business).
-- **Motion (reduced Oct 2026, client wanted less):** only the brush-stroke intro and the tape under each h2, which is drawn in once when the heading scrolls into view. Everything else is static: no scroll reveals, parallax, smooth scroll, marquee, reading bar, logo spin, note tilt, wordmark rise or button paint effect. Hover states (nav underline, service tape, phone tape) stay.
+- **Motion (reduced Oct 2026, client wanted less):** the only movement is the tape under each h2, which is drawn in once when the heading scrolls into view. The brush-stroke intro was removed. Everything else is static: no scroll reveals, parallax, smooth scroll, marquee, reading bar, logo spin, note tilt, wordmark rise or button paint effect. Hover states (nav underline, service tape, phone tape) stay.
 - **Footer:** three columns: name + tagline ("Kwaliteit voor een betaalbare prijs"), contact (phone, e-mail, WhatsApp, address), services.
 
 ### Copy (use this, adjust lightly if it doesn't fit)
@@ -134,18 +134,12 @@ Size tokens: `--text-lead: clamp(1.125rem, 1.6vw, 1.375rem)` for the hero line a
 Spend all boldness here; keep everything else quiet.
 
 - Each section heading has a strip of blue painter's tape (a slightly rough-edged `--tape` rectangle, a little skewed, ~1–2°) partly behind or under it, like tape on a wall before painting.
-- ~~In the hero, a strip of tape peels away on load~~ (replaced, see intro below). The heading tape is static.
-- **Intro (the one bold moment):** one wide `--tape` brush stroke paints diagonally (bottom-left → top-right) across a `--plaster` cover. It is built in SVG (feTurbulence + feDisplacementMap for rough edges and bristle streaks), not video. The stroke is a mask: the page shows through it as it paints, then the opening grows to full screen and the intro is removed.
-  - It never blocks first understanding: it runs by itself, headline, sub line and "Bel Edward" are fully readable at ~0.8s, and the intro is gone at ~1.05s. Scrolling (wheel, touch, scroll keys) plays it 3× faster; nothing has to be scrolled through, and the hero is never pinned.
-  - Both stroke ends sit beyond the screen corners, so no stroke end, edge or hairline is ever visible; only the stroke and the page.
-  - The nav sits above the cover, so "Bel Edward" is visible and clickable throughout. Clicking/tapping the cover, Escape/Enter, or tabbing into the page ends the intro at once.
-  - Once per visit: `sessionStorage` key `delina-intro` is set when the intro finishes.
-  - All content is in the HTML underneath from the start. The cover only appears once the intro script has set itself up (`html.intro-on`), so a script error never hides the page.
-  - No other animation in the hero while the intro runs.
+- ~~In the hero, a strip of tape peels away on load~~ (replaced, then dropped). The heading tape is static.
+- **Intro: none.** The page shows immediately; the brush-stroke intro was removed (Oct 2026). The one bold element is the heading tape.
 - **Scrolling:** native. The heading tape draws in from the left once when its h2 enters the viewport. Nothing else animates on scroll.
   - "Bel Edward" buttons, the phone number, the nav and the call bar are never part of any animation.
   - Everything is in the HTML and readable without JavaScript; the draw-in only runs when JS adds `html.motion`.
-- Respect `prefers-reduced-motion`: no intro, no heading-tape animation, everything simply visible.
+- Respect `prefers-reduced-motion`: no heading-tape animation, everything simply visible.
 
 ## 8. Navigation
 

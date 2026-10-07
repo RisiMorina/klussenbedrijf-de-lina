@@ -64,12 +64,8 @@
     var root = document.documentElement;
     root.classList.add('js');
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    // The only motion besides the intro: the tape under headings is drawn in. Without this class everything is simply visible.
+    // The only motion: the tape under headings is drawn in. Without this class everything is simply visible.
     root.classList.add('motion');
-    // Brush-stroke intro until it has been painted once this visit; never when storage is blocked
-    try {
-      if (!sessionStorage.getItem('delina-intro')) root.classList.add('has-intro');
-    } catch (e) {}
   })();
 </script>
 <style>
@@ -287,15 +283,6 @@
   .band span { display: flex; align-items: center; gap: 1.5rem; white-space: nowrap; }
   .band span:not(:last-child)::after { content: ""; width: .5em; height: .5em; border: 2px solid currentColor; border-radius: 50%; opacity: .7; }
 
-  /* ---------- Intro: a brush stroke paints the page open (~1s, scrolling speeds it up) ---------- */
-  /* Shown only once the intro script has set it up (html.intro-on), so a broken script never hides the page.
-     It sits under the nav, so "Bel Edward" in the nav stays visible and clickable throughout. */
-  .intro { display: none; }
-  html.intro-on .intro { display: block; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9; }
-  .intro svg { display: block; width: 100%; height: 100%; }
-  .intro .cover { fill: var(--plaster); }
-  .intro .paint { stroke: var(--tape); }
-
   /* ---------- Services ---------- */
   .services .lead { margin-bottom: 2.5rem; }
   .list { max-width: 52rem; border-top: 1px solid var(--line); }
@@ -504,145 +491,17 @@
   }
 
   @media print {
-    .nav, .callbar, .intro, .band, .map, .skip, .wordmark { display: none !important; }
+    .nav, .callbar, .band, .map, .skip, .wordmark { display: none !important; }
     body { background: #fff; }
     .statement { background: none; color: var(--ink); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .intro { display: none !important; }
     .nav, .callbar, .btn, .phone::before, .faq summary::after, .nav-links a::after, .copy { transition: none; }
   }
 </style>
 </head>
 <body>
-
-<!-- Intro: a plaster cover with a brush-stroke hole. The page underneath is fully loaded; this only covers it. -->
-<div class="intro" id="intro" aria-hidden="true">
-  <svg xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <!-- rough, displaced edges -->
-      <filter id="brush-edge" filterUnits="userSpaceOnUse">
-        <feTurbulence type="fractalNoise" baseFrequency="0.004 0.06" numOctaves="2" seed="7" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="34" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-      <!-- rough edges plus bristle streaks running along the stroke -->
-      <filter id="brush-bristle" filterUnits="userSpaceOnUse">
-        <feTurbulence type="fractalNoise" baseFrequency="0.004 0.06" numOctaves="2" seed="7" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="34" xChannelSelector="R" yChannelSelector="G" result="rough"/>
-        <feTurbulence type="fractalNoise" baseFrequency="0.0025 0.22" numOctaves="1" seed="2" result="hairs"/>
-        <feColorMatrix in="hairs" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  9 0 0 0 -3.4" result="streaks"/>
-        <feComposite in="rough" in2="streaks" operator="in"/>
-      </filter>
-      <mask id="intro-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
-        <rect width="100%" height="100%" fill="#fff"/>
-        <g class="stroke-pos"><path class="hole" fill="none" stroke="#000" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" filter="url(#brush-edge)"/></g>
-      </mask>
-    </defs>
-    <g mask="url(#intro-mask)">
-      <rect class="cover" width="100%" height="100%"/>
-      <g class="stroke-pos"><path class="paint" fill="none" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" filter="url(#brush-bristle)"/></g>
-    </g>
-  </svg>
-</div>
-<script>
-(function () {
-  var root = document.documentElement, intro = document.getElementById('intro');
-  if (!root.classList.contains('has-intro')) { intro.remove(); return; }
-
-  var w = innerWidth, h = innerHeight, diag = Math.hypot(w, h);
-  // diagonal from bottom-left to top-right, drawn along local x so the bristle noise follows the stroke
-  var angle = -Math.atan2(h * .8, w * 1.25) * 180 / Math.PI;
-  var width = Math.max(170, Math.min(w, h) * .46);
-  var full = diag * 2.2;
-  // Both ends sit beyond the screen's corners (plus the brush's displacement), so a stroke end
-  // can never show, not even when the stroke grows to full width.
-  var len = diag + width + 80;
-  var d = 'M' + (-len / 2) + ' 0 Q 0 ' + (-width * .3) + ' ' + (len / 2) + ' 0';
-
-  intro.querySelectorAll('.stroke-pos').forEach(function (g) {
-    g.setAttribute('transform', 'translate(' + w / 2 + ' ' + h / 2 + ') rotate(' + angle + ')');
-  });
-  // filter area = a circle around the screen, so the texture stays on while the stroke grows to full screen
-  var reach = Math.hypot(w, h) / 2 + 40;
-  intro.querySelectorAll('filter').forEach(function (f) {
-    f.setAttribute('x', -reach); f.setAttribute('width', reach * 2);
-    f.setAttribute('y', -reach); f.setAttribute('height', reach * 2);
-  });
-  // Phones redraw this full-screen filter on every frame; one octave of noise is much cheaper and looks the same at that size
-  if (w < 700 || matchMedia('(pointer: coarse)').matches) {
-    intro.querySelectorAll('feTurbulence').forEach(function (t) { t.setAttribute('numOctaves', '1'); });
-  }
-  var hole = intro.querySelector('.hole'), paint = intro.querySelector('.paint');
-  hole.setAttribute('d', d); paint.setAttribute('d', d);
-  var holeWidth = width * .62;
-  hole.style.strokeWidth = holeWidth + 'px';
-  paint.style.strokeWidth = width + 'px';
-
-  // Progress 0→1 runs by itself in ~1s (scrolling plays it faster):
-  //   0–.55  the paint sweeps across     .04–.60  the page opens up just behind it
-  //   .55–1  the opening grows to full screen (hero readable well before 1s), then the intro is removed
-  var DURATION = 1000, FAST = 3;
-  // skip the part of the stroke that lies off-screen at the start, so paint appears from the first frame
-  var rad = angle * Math.PI / 180;
-  var onAxis = w / 2 * Math.abs(Math.cos(rad)) + h / 2 * Math.abs(Math.sin(rad));
-  var skip = Math.max(0, (len / 2 - onAxis - width / 2) / len);
-  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
-  function easeOut(t) { return 1 - (1 - t) * (1 - t); }   // paint starts moving at once, settles at the end
-  function render(p) {
-    var a = easeOut(clamp(p / .55)), b = easeOut(clamp((p - .04) / .56)), g = clamp((p - .55) / .45);
-    g *= g;
-    paint.style.strokeDashoffset = 1 - (skip + (1 - skip) * a);
-    hole.style.strokeDashoffset = 1 - (skip + (1 - skip) * b);
-    hole.style.strokeWidth = holeWidth + (full - holeWidth) * g + 'px';
-    paint.style.strokeWidth = width + (full * 1.1 - width) * g + 'px';
-  }
-
-  // On a slow phone a single frame can take a few hundred ms. Counting real time would then use up the
-  // whole second in 3–4 frames and the stroke would never be seen, so one frame advances at most ~1/30 s.
-  // Time only starts once the cover has actually been painted, and MAX_WALL is a hard stop so the page is never held up.
-  var MAX_STEP = 1000 / 24, MAX_WALL = 2500;
-  var p = 0, rate = 1, last = null, started = null, done = false;
-  function frame(now) {
-    if (done) return;
-    if (started === null) started = now;
-    if (last !== null) p += Math.min(now - last, MAX_STEP) / DURATION * rate;
-    last = now;
-    if (p >= 1 || now - started > MAX_WALL) return finish();
-    render(p);
-    requestAnimationFrame(frame);
-  }
-  function hurry() { rate = FAST; }
-
-  var scrollInput = ['wheel', 'touchmove', 'scroll'];
-  function finish() {
-    if (done) return; done = true;
-    intro.remove();
-    root.classList.remove('intro-on', 'has-intro');
-    try { sessionStorage.setItem('delina-intro', '1'); } catch (e) {}
-    scrollInput.forEach(function (t) { removeEventListener(t, hurry); });
-    removeEventListener('keydown', onKey);
-    removeEventListener('focusin', onFocus);
-  }
-  // Ways out: click/tap the cover, Escape/Enter, or tab to anything outside the nav. Scrolling speeds it up.
-  function onKey(e) {
-    if (e.key === 'Escape' || e.key === 'Enter') finish();
-    else if (/^(ArrowDown|PageDown|Space| |End)$/.test(e.key)) hurry();
-  }
-  function onFocus(e) { if (!(e.target.closest && e.target.closest('.nav'))) finish(); }
-
-  try {
-    root.classList.add('intro-on');
-    render(0);
-    intro.addEventListener('click', finish);
-    addEventListener('keydown', onKey);
-    addEventListener('focusin', onFocus);
-    scrollInput.forEach(function (t) { addEventListener(t, hurry, { passive: true }); });
-    // first frame paints the cover, the clock starts on the next one
-    requestAnimationFrame(function () { requestAnimationFrame(frame); });
-  } catch (e) { finish(); }
-})();
-</script>
 
 <a class="skip" href="#diensten">Naar de inhoud</a>
 

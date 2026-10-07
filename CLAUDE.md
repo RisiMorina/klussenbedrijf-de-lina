@@ -29,7 +29,6 @@ Open `index.html` directly in a browser. No dependencies except Google Fonts (Ar
 ## Page structure (in order)
 
 1. `header.nav`: always visible (never hides; border appears once scrolled, `.is-scrolled`). Logo lockup (`.logo-img` + "De-Lina" + "Klussenbedrijf"; `--nav-h` is 4.25rem to fit it), `.nav-links` anchor menu ≥1180px (active section underlined via IntersectionObserver), "Bel Edward" (>640px only). Menu: Diensten, Prijs, Vragen, Contact (no Werkwijze, no Locatie). Section ids `#diensten #werkwijze #prijs #vragen #contact #locatie` still exist as anchors (`#locatie` = address + map block inside contact; FAQ links to it).
-0. `div.intro` (first in `<body>`): SVG brush-stroke intro overlay + its inline script. Head script adds `html.has-intro` (not yet shown this session, no reduced motion); the intro script adds `html.intro-on` once set up, which shows the cover. Removed from the DOM when finished or skipped.
 2. `section.hero` (`.wrap.hero-grid`): h1 (6 words), sub line, `.actions`; ≥1000px also `aside.memo`, a note "taped to the wall" with 4 key facts + phone. No animation in the hero.
 2b. `div.band`: decorative (`aria-hidden`) rotated tape strip with the services. Static, wraps on narrow screens. `main` has `overflow-x: clip` for it.
 3. `section.services`: "Wat ik doe", `.lead`, plain `ul.list` (not cards).
@@ -61,15 +60,9 @@ Open `index.html` directly in a browser. No dependencies except Google Fonts (Ar
 - Text links use `--tape-dark` (not `--tape`) for AA contrast on plaster.
 - Headings: `.taped` span inside each h2 draws the painter's-tape strip (`::before`). It's the one bold element; keep everything else quiet.
 - Buttons: `.btn` (solid tape, 3px radius, `--btn-h`); `.nav .btn` is the only slimmer variant. No arrows in labels.
-- **Motion is deliberately minimal (client wanted less, Oct 2026).** Only two things move: the brush-stroke intro and the tape under each h2, which draws in once (`h2.in .taped::before` scaleX 0→1) via an IntersectionObserver, only under `html.motion` (head script: JS on, no reduced motion). Without it everything is static and visible. Removed on purpose, don't bring back: reveals, h2 line splitting, hero parallax/fade, Lenis, marquee, word-lighting quote, memo tilt/drop-in, logo spin, wordmark rise, reading bar, button paint effect, drawing divider lines, steps tape line, FAQ ease-in, smooth anchor scrolling. Hover states (nav underline, service and phone tape) stay.
+- **Motion is deliberately minimal (client wanted less, Oct 2026).** The brush-stroke intro was removed (Oct 2026). Only one thing moves: the tape under each h2, which draws in once (`h2.in .taped::before` scaleX 0→1) via an IntersectionObserver, only under `html.motion` (head script: JS on, no reduced motion). Without it everything is static and visible. Removed on purpose, don't bring back: reveals, h2 line splitting, hero parallax/fade, Lenis, marquee, word-lighting quote, memo tilt/drop-in, logo spin, wordmark rise, reading bar, button paint effect, drawing divider lines, steps tape line, FAQ ease-in, smooth anchor scrolling. Hover states (nav underline, service and phone tape) stay.
   - Only animate `transform` and `opacity`.
   - Browser support: older-browser fallbacks are written before modern values (`overflow: hidden` before `clip`, `vh` before `svh`, longhand `top/right/bottom/left` instead of `inset`). Keep that pattern. Hero is `min-height: min(100svh, 60rem)`, content centred; on phones (≤640px) no min-height, so the services follow right after.
-- Intro is time-driven (`DURATION` 1000ms of progress, `FAST` = 3× once the visitor scrolls). Paint 0–.55, opening .04–.60, opening grows to full screen .55–1, then `finish()` removes it.
-  Hero is fully readable at ~0.8s; intro gone at ~1.05s. Stroke length = screen diagonal + stroke width + 80px, so its ends are always off-screen; `skip` starts the dash at the screen edge.
-  Cover is `z-index: 9` under the nav (10).
-  Slow devices (phones): each frame advances progress by at most `MAX_STEP` (1/24 s), so a phone that renders the filter at a few fps still shows every phase instead of jumping to the end; the clock starts on the second rAF (after the cover is painted); `MAX_WALL` 2500ms is a hard stop. On touch/small screens the `feTurbulence` octaves drop to 1 to make each frame cheaper.
-  Headless Edge with `--virtual-time-budget` produces very few frames, so the intro looks "stuck" there; that's the test, not the page.
-  Exits: click on the cover, Escape/Enter, focus outside the nav. Test in a fresh browser context (sessionStorage hides it after it finished once). For frame captures use Playwright's paused clock (`clock.install` + `pauseAt` + `runFor`), since the intro runs on requestAnimationFrame time.
 - Placeholders use `<span class="todo">TODO</span>` (dashed outline). Never invent work area, KvK, hours, reviews or photos.
 
 ## Never
