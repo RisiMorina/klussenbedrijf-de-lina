@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="nl">
 <head>
+<meta name="robots" content="noindex, nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Klussenbedrijf De-Lina — schilderwerk, stucwerk en vloeren</title>
@@ -29,8 +30,6 @@
   "email": "hayk23@hotmail.nl",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "P.C. Hooftlaan 58",
-    "postalCode": "7412 PT",
     "addressLocality": "Deventer",
     "addressCountry": "NL"
   },
@@ -48,7 +47,7 @@
     { "@type": "Question", "name": "Werkt u ook buiten?", "acceptedAnswer": { "@type": "Answer", "text": "Ja. Schilderwerk doe ik binnen en buiten." } },
     { "@type": "Question", "name": "Legt u ook tapijt op de trap?", "acceptedAnswer": { "@type": "Answer", "text": "Ja, ik leg tapijt ook op trappen." } },
     { "@type": "Question", "name": "Met wie heb ik te maken?", "acceptedAnswer": { "@type": "Answer", "text": "Met mij, Edward. Ik werk alleen en doe het werk zelf." } },
-    { "@type": "Question", "name": "Waar zit u?", "acceptedAnswer": { "@type": "Answer", "text": "In Deventer, aan de P.C. Hooftlaan 58." } },
+    { "@type": "Question", "name": "Waar zit u?", "acceptedAnswer": { "@type": "Answer", "text": "In Deventer." } },
     { "@type": "Question", "name": "Kan ik ook een bericht sturen?", "acceptedAnswer": { "@type": "Answer", "text": "Zeker. Via WhatsApp of per e-mail." } }
   ]
 }
@@ -417,7 +416,6 @@
   .vcard a { font-weight: 600; }
   /* details on the left, map on the right (stacked on small screens) */
   .contact-grid { display: grid; gap: 2rem 4rem; margin-top: clamp(3rem, 6vw, 4.5rem); padding-top: 2.5rem; border-top: 1px solid var(--line); }
-  @media (min-width: 900px) { .contact-grid { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); } }
   .facts { display: grid; gap: 1.5rem; align-content: start; }
   .facts dt { margin-bottom: .2rem; font: 800 1.125rem/1.2 var(--font-head); font-stretch: 85%; }
   .facts dd { margin: 0; color: var(--muted); }
@@ -775,7 +773,7 @@
         <details><summary>Werkt u ook buiten?</summary><p>Ja. Schilderwerk doe ik binnen en buiten.</p></details>
         <details><summary>Legt u ook tapijt op de trap?</summary><p>Ja, ik leg tapijt ook op trappen.</p></details>
         <details><summary>Met wie heb ik te maken?</summary><p>Met mij, Edward. Ik werk alleen en doe het werk zelf.</p></details>
-        <details><summary>Waar zit u?</summary><p>In Deventer, aan de P.C. Hooftlaan 58. <a href="#locatie">Bekijk de kaart</a></p></details>
+        <details><summary>Waar zit u?</summary><p>In Deventer.</p></details>
         <details><summary>Kan ik ook een bericht sturen?</summary><p>Zeker. Via <a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">WhatsApp</a> of per <a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">e-mail</a>.</p></details>
       </div>
     </div>
@@ -797,9 +795,8 @@
       <div class="contact-grid" id="locatie">
         <dl class="facts">
           <div>
-            <dt>Adres</dt>
-            <dd><address>P.C. Hooftlaan 58<br>7412 PT Deventer</address>
-              <a href="https://www.google.com/maps/search/?api=1&amp;query=P.C.+Hooftlaan+58%2C+7412+PT+Deventer">Open in Google Maps</a></dd>
+            <dt>Plaats</dt>
+            <dd>Deventer</dd>
           </div>
           <div>
             <dt>Bereikbaar via</dt>
@@ -808,12 +805,9 @@
           </div>
           <div>
             <dt>Werkgebied</dt>
-            <dd><span class="todo">TODO</span></dd>
+            <dd>Deventer en omgeving (nog te bevestigen)</dd>
           </div>
         </dl>
-        <div class="map">
-          <iframe src="https://www.google.com/maps?q=P.C.+Hooftlaan+58,+7412+PT+Deventer&amp;z=15&amp;output=embed" title="Kaart: P.C. Hooftlaan 58, Deventer" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
       </div>
     </div>
   </section>
@@ -833,7 +827,7 @@
           <li><a href="tel:+31642920203">06 42 92 02 03</a></li>
           <li><a href="mailto:hayk23@hotmail.nl?subject=Klus%20via%20de%20website">hayk23@hotmail.nl</a></li>
           <li><a href="https://wa.me/31642920203?text=Hallo%20Edward%2C%20ik%20heb%20een%20klus%3A%20">WhatsApp</a></li>
-          <li><address>P.C. Hooftlaan 58<br>7412 PT Deventer</address></li>
+          <li>Deventer</li>
         </ul>
       </div>
       <div>
@@ -848,7 +842,7 @@
       </div>
     </div>
     <div class="legal">
-      <p>© <span id="year">2026</span> Klussenbedrijf De-Lina · Edward · KvK <span class="todo">TODO</span></p>
+      <p>© <span id="year">2026</span> Klussenbedrijf De-Lina · Edward</p>
       <p class="legal-links">
         <!-- word of mouth: share the site (Web Share on phones, otherwise copy the link); shown by JS -->
         <button class="linkbtn" type="button" id="share" hidden>Deel deze site</button>
